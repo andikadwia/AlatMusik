@@ -7,5 +7,6 @@ Use App\Http\Controllers\HomeController;
 //    return view('welcome');
 // });
 
+
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/contact', [HomeController::class, 'contact']);
