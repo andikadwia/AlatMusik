@@ -22,3 +22,11 @@ Route::get('/login', function () {
 Route::get('/registrasi', function () {
     return view('registrasi');
 })->name('register');
+
+Route::get('/resteasy', function () {
+    return view('resteasy');
+})->name('resteasy');
+
+Route::get('/edit', function () {
+    return view('edit');
+})->name('edit');
