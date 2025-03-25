@@ -14,3 +14,11 @@ Route::get('/listitem', [ListItemController::class, 'tampilkan']);
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/contact', [HomeController::class, 'contact']);
+
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+
+Route::get('/registrasi', function () {
+    return view('registrasi');
+})->name('register');

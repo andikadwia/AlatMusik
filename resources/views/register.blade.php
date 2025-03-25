@@ -1,3 +1,0 @@
-<div>
-REGISTER FROM ANDIKA DWI AMANDA
-</div>
