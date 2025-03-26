@@ -30,3 +30,11 @@ Route::get('/resteasy', function () {
 Route::get('/edit', function () {
     return view('edit');
 })->name('edit');
+
+Route::get('/beranda', function () {
+    return view('beranda');
+})->name('beranda');
+
+Route::get('/produk', function () {
+    return view('produk');
+})->name('produk');
