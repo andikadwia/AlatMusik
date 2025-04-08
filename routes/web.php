@@ -36,7 +36,6 @@ Route::get('/edit', function () {
     return view('edit');
 })->name('edit');
 
-<<<<<<< HEAD
 Route::get('/beranda', function () {
     return view('beranda');
 })->name('beranda');
@@ -44,7 +43,7 @@ Route::get('/beranda', function () {
 Route::get('/produk', function () {
     return view('produk');
 })->name('produk');
-=======
+
 Route::get('/kontak', function () {
     return view('kontak');
 })->name('kontak');
@@ -52,4 +51,4 @@ Route::get('/kontak', function () {
 Route::get('/landingpage', function () {
     return view('landingpage');
 })->name('landingpage');
->>>>>>> 7125e3e341502983d93d59e1794628965ab2eafb
+
