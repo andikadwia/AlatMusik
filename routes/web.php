@@ -51,4 +51,3 @@ Route::get('/kontak', function () {
 Route::get('/landingpage', function () {
     return view('landingpage');
 })->name('landingpage');
-
