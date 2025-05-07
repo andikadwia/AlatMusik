@@ -39,7 +39,7 @@ class RegisterController extends Controller
             'name' => $request->username,
             'email' => $request->email,
             'username' => $request->username,
-            'Telepon' => $request->telepon,
+            'telepon' => $request->telepon,
             'alamat' => $request->alamat,
             'password' => Hash::make($request->password),
             'role' => User::ROLE_USER, 
