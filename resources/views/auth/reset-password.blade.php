@@ -39,15 +39,19 @@
       </div>
       
       <!-- New password Form -->
-      <form id="mengaturulangsandi-form" class="space-y-4">
+      <form method="post" action="{{ route('password.reset') }}" id="mengaturulangsandi-form" class="space-y-4">
+        @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
+        <input type="hidden" name="phone" value="{{ $phone }}">
+        
         <!-- New password Field -->
         <div>
-          <label for="newPassword" class="block text-base font-normal mb-1 text-gray-800">Mengatur ulang kata sandi</label>
+          <label for="password" class="block text-base font-normal mb-1 text-gray-800">Mengatur ulang kata sandi</label>
           <div class="relative">
             <input
               type="password"
-              id="newPassword"
-              name="newPassword"
+              id="password"
+              name="password"
               class="w-full pl-10 pr-10 py-2 text-base font-light border border-amber-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Masukkan kata sandi baru"
               required
@@ -60,7 +64,7 @@
               </svg>
             </div>
             <!-- Ikon mata di sebelah kanan -->
-            <button type="button" onclick="togglePasswordVisibility('newPassword', 'eyeIconNew')" class="eye-icon absolute inset-y-0 right-0 flex items-center pr-3">
+            <button type="button" onclick="togglePasswordVisibility('password', 'eyeIconNew')" class="eye-icon absolute inset-y-0 right-0 flex items-center pr-3">
               <svg id="eyeIconNew" class="w-5 h-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -71,12 +75,12 @@
         
         <!-- Confirm Password Field -->
         <div>
-          <label for="confirmPassword" class="block text-base font-normal mb-1 text-gray-800">Konfirmasi kata sandi</label>
+          <label for="password_confirmation" class="block text-base font-normal mb-1 text-gray-800">Konfirmasi kata sandi</label>
           <div class="relative">
             <input
               type="password"
-              id="confirmPassword"
-              name="confirmPassword"
+              id="password_confirmation"
+              name="password_confirmation"
               class="w-full pl-10 pr-10 py-2 text-base font-light border border-amber-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Konfirmasi kata sandi baru"
               required
@@ -89,7 +93,7 @@
               </svg>
             </div>
             <!-- Ikon mata di sebelah kanan -->
-            <button type="button" onclick="togglePasswordVisibility('confirmPassword', 'eyeIconConfirm')" class="eye-icon absolute inset-y-0 right-0 flex items-center pr-3">
+            <button type="button" onclick="togglePasswordVisibility('password_confirmation', 'eyeIconConfirm')" class="eye-icon absolute inset-y-0 right-0 flex items-center pr-3">
               <svg id="eyeIconConfirm" class="w-5 h-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
