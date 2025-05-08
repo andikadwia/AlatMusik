@@ -29,6 +29,11 @@
             <div class="w-full md:w-48 mr-2 mb-4 md:mb-0">
                 <select class="bg-white-50 border border-primary text-primary rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
                     <option selected>Semua Kategori</option>
+                    <option selected>Elektrofon</option>
+                    <option selected>Aerofon</option>
+                    <option selected>Kordofon</option>
+                    <option selected>Iliofon</option>
+                    <option selected>Membranofon</option>
                 </select>
             </div>
         </div>
