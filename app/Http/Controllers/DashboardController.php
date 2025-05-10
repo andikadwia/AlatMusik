@@ -3,11 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\AlatMusik;
+use App\Models\User;
 
-class DashboardController extends Controller
+class DashboardController extends Controller  // Pastikan extend Controller
 {
-    public function tampilkan()
+    // Pindahkan middleware ke constructor
+    public function __construct()
     {
-        return view('dashboard'); // Pastikan ada file register.blade.php di folder views
+        $this->middleware('auth');
+        $this->middleware('admin');  // Pastikan middleware 'admin' sudah terdaftar
+    }
+
+    public function index()
+    {
+        return view('pages.dashboard.index');
     }
 }

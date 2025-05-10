@@ -37,10 +37,10 @@ class LoginController extends Controller
             // return redirect()->route('otp.verify');
             
             // Langsung redirect ke beranda/halaman utama
-            return redirect()->intended('/');
+            //return redirect()->intended('/');
             
             // Atau jika ingin tetap menggunakan redirectBasedOnRole tapi ke halaman utama
-            // return $this->redirectBasedOnRole(auth()->user());
+            return $this->redirectBasedOnRole(auth()->user());
         }
 
         return back()->withErrors([
@@ -51,17 +51,13 @@ class LoginController extends Controller
     protected function redirectBasedOnRole(User $user)
     {
         // Modifikasi untuk semua role mengarah ke beranda
-        return redirect()->intended('/');
+        //return redirect()->intended('/');
         
         // Atau jika Anda ingin admin tetap ke dashboard admin
-        /*
-        switch ($user->role) {
-            case User::ROLE_ADMIN:
-                return redirect()->intended('/admin/dashboard');
-            default:
-                return redirect()->intended('/');
+        if ($user->role === 'admin') {
+            return redirect('/dashboard');
         }
-        */
+        return redirect('/');
     }
 
     public function logout(Request $request)
