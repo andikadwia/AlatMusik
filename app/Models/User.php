@@ -15,7 +15,8 @@ class User extends Authenticatable
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
 
-    use HasFactory;
+    protected $table = 'users';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'name',
@@ -30,4 +31,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function pemesanan()
+    {
+        return $this->hasMany(Pemesanan::class, 'id_pengguna');
+    
+    }
 }
