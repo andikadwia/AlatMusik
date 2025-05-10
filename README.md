@@ -1,3 +1,16 @@
+FYI:
+Project ini harus menggunakan database sql untuk menjalankannya. tabel pengguna tidak perlu di perhatikan karena tidak nyambung ke code yang ada di project ini. 
+
+letak database sql nya di folder public.
+
+untuk akunnya user :
+username:user
+password:user12345
+
+untuk akunnya admin :
+username:zidan
+password:zidan123
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
