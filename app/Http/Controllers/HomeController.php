@@ -38,7 +38,7 @@ class HomeController extends Controller
             ],
             [
                 'id' => 4, // Tambahkan ID
-                'name' => 'Yamha Pacifica',
+                'name' => 'Yamaha Pacifica',
                 'category' => 'Gitar Elektrik',
                 'rating' => 4,
                 'price' => 'Rp 150.000/hari',

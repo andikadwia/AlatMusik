@@ -18,6 +18,8 @@ use App\Http\Controllers\ProductdashController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Middleware\AdminMiddleware;    
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RiwayatController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -80,11 +82,20 @@ Route::middleware('auth')->group(function () {
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+        // Profile routes
+        Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
+        Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profil/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+        
+        // Other authenticated routes
+       
     
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
     Route::get('/keranjang', [CartController::class, 'index'])->name('cart');
-    Route::get('/pesanan', [OrderController::class, 'index'])->name('orders');
-<<<<<<< HEAD
+    Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
+
+
     
     // Protected OTP Routes
     Route::post('verify-otp', [OTPController::class, 'verify'])
@@ -110,7 +121,6 @@ Route::get('/test-fonnte', function() {
     } catch (\Exception $e) {
         return ['error' => $e->getMessage()];
     }
-=======
 });
 
 // Admin Only Routes
@@ -142,5 +152,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('dashboard/return/{id}', [ReturnController::class, 'show'])->name('pengembalian.show');
 
     Route::get('dashboard/customer', [CustomerController::class, 'index'])->name('dashboard.pelanggan.index');
->>>>>>> upstream/main
 });
+
+//produtcController
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
