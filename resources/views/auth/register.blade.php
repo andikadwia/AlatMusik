@@ -17,7 +17,7 @@
   <!-- Fullscreen Background -->
   <div class="fixed inset-0 -z-10">
     <div 
-        class="absolute inset-0 bg-[url('gitar.jpg')] bg-contain bg-center bg-no-repeat"
+        class="absolute inset-0 bg-[url('/images/gitar.jpg')] bg-contain bg-center bg-no-repeat"
         style="background-size: 100% 100%;"
     ></div>
     <div class="absolute inset-0 bg-black bg-opacity-30"></div>

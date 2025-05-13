@@ -9,25 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Tambahkan kolom telepon dengan NOT NULL
-            if (!Schema::hasColumn('users', 'telepon')) {
-                $table->string('telepon', 15) // Maksimal 15 karakter
-                      ->after('email') // Letakkan setelah kolom email
-                      ->nullable(false); // NOT NULL
-            }
+            $table->string('telepon')->unique()->nullable();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    
+    public function down()
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('telepon');
         });
     }
-};
+};    

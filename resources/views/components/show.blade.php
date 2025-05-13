@@ -161,7 +161,7 @@
                             <!-- Action Buttons -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <button type="button" class="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-lg font-bold transition-colors duration-200 flex items-center justify-center gap-2 text-sm lg:text-base">
-                                <a href="{{ route('payment.index') }}" class="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-lg font-bold transition-colors duration-200 flex items-center justify-center gap-2 text-sm lg:text-base">
+                                <a href="#" class="w-full bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-lg font-bold transition-colors duration-200 flex items-center justify-center gap-2 text-sm lg:text-base">
     Sewa Sekarang
 </a>
 

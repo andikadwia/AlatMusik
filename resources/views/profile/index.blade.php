@@ -3,7 +3,16 @@
 @section('content')
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="container mx-auto px-4">
+        <!-- Tombol Kembali ke Beranda -->
+        <button onclick="window.location.href='{{ url('/') }}'" 
+                class="mb-4 flex items-center px-4 py-2 bg-white text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors no-print">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali ke Beranda
+        </button>
         <div class="flex flex-col md:flex-row gap-8">
+            
 <!-- Sidebar Profile -->
 <div class="w-full md:w-64 lg:w-80 flex-shrink-0">
     <div class="bg-white rounded-lg shadow-sm p-6 h-[calc(114vh-4rem)] flex flex-col">
@@ -22,7 +31,7 @@
                             <input type="file" id="avatar-upload" name="avatar" class="hidden" form="profile-form">
                         </div>
                         <h2 class="text-xl font-bold text-gray-800">{{ $user->name }}</h2>
-                        <h3 class="text-gray-600 text-sm">{{ '@' . $user->email }}</h3>
+                        <h3 class="text-gray-600 text-sm">{{ '' . $user->email }}</h3>
                     </div>
 
                     <!-- Navigation Menu -->
@@ -37,7 +46,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('orders') }}" class="flex items-center px-4 py-2 text-gray-600 hover:text-primary hover:bg-gray-100 rounded-lg transition-colors">
+                                <a href="{{ route('riwayat') }}" class="flex items-center px-4 py-2 text-gray-600 hover:text-primary hover:bg-gray-100 rounded-lg transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
