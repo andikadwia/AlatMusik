@@ -38,25 +38,29 @@
             </div>
         </div>
 
-        <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-            @foreach($products as $product)
-                <x-product-card :product="$product" />
-            @endforeach
-        </div>
+        
+            <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+    @foreach($products as $product)
+        <x-product-card :product="$product" />
+    @endforeach
+</div>
 
-        <div class="text-center mt-8">
-            <button id="load-more-btn" class="text-primary-600 hover:text-primary-800 font-medium" data-page="2">
-                Lainnya....
-            </button>
-            <div id="loading-spinner" class="hidden mt-4">
-                <svg class="animate-spin h-5 w-5 text-primary-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            </div>
+@if($products->count() >= 6)
+    <div class="text-center mt-8">
+        <button id="load-more-btn" data-offset="6" class="text-primary-600 hover:text-primary-800 font-medium px-4 py-2 border border-primary-600 rounded-lg transition-all hover:bg-primary-50">
+            Tampilkan Lainnya
+        </button>
+        <div id="loading-spinner" class="hidden mt-4">
+            <svg class="animate-spin h-5 w-5 text-primary-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
         </div>
     </div>
-</section>
+@endif
+        </div>
+    </section>
+
 
     <section id="syarat" class="py-16 bg-gradient-to-b from-[#f5f5f5] to-[#d9d9d9]">
     <div class="container mx-auto px-4">
@@ -111,5 +115,40 @@
             </div>
         </div>
     </section>
+    <script>
+document.getElementById('load-more-btn').addEventListener('click', function() {
+    const button = this;
+    const offset = parseInt(button.dataset.offset);
+    const spinner = document.getElementById('loading-spinner');
+    
+    // Tampilkan spinner, sembunyikan tombol
+    spinner.classList.remove('hidden');
+    button.classList.add('hidden');
+    
+    fetch(`/load-more?offset=${offset}`)
+        .then(response => response.json())
+        .then(data => {
+            // Tambahkan produk baru ke container
+            document.getElementById('products-container').insertAdjacentHTML('beforeend', data.html);
+            
+            // Update offset untuk load berikutnya
+            button.dataset.offset = offset + 6;
+            
+            // Sembunyikan tombol jika tidak ada lagi data
+            if(data.has_more === false) {
+                button.style.display = 'none';
+            }
+            
+            // Sembunyikan spinner, tampilkan tombol
+            spinner.classList.add('hidden');
+            button.classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            spinner.classList.add('hidden');
+            button.classList.remove('hidden');
+        });
+});
+</script>
     
 @endsection
