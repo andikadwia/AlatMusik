@@ -156,3 +156,4 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
 //produtcController
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/load-more', [HomeController::class, 'loadMore']);

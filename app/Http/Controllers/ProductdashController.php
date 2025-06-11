@@ -44,7 +44,7 @@ class ProductdashController extends Controller
             }
         }
 
-        Produk::create([
+        Product::create([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'stok' => $request->stok,

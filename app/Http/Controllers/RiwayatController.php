@@ -31,25 +31,25 @@ class RiwayatController extends Controller
                 'id' => 1,
                 'instrument_name' => 'Gitar Akustik',
                 'image' => 'gitar.jpg',
-                'rent_date' => '15 Jan 2023',
-                'return_date' => '20 Jan 2023',
-                'duration' => '5 hari',
+                'rent_date' => '13 mei 2025',
+                'return_date' => '14 mei 2025',
+                'duration' => '2 hari',
                 'status' => 'Selesai',
-                'total_price' => 'Rp 1.000.000',
+                'total_price' => 'Rp 200.000',
                 'payment_method' => 'Transfer Bank',
-                'order_time' => '14 Jan 2023 10:30'
+                'order_time' => '13 mei 2025 10:30'
             ],
             [
                 'id' => 2,
                 'instrument_name' => 'Gitar Elektrik',
                 'image' => 'gitar.jpg',
-                'rent_date' => '1 Feb 2023',
-                'return_date' => '5 Feb 2023',
-                'duration' => '4 hari',
+                'rent_date' => '10 januari 2025',
+                'return_date' => '12 Feb 2025',
+                'duration' => '3 hari',
                 'status' => 'Menunggu Pembayaran',
-                'total_price' => 'Rp 800.000',
+                'total_price' => 'Rp 300.000',
                 'payment_method' => 'Pembayaran Langsung',
-                'order_time' => '30 Jan 2023 14:15'
+                'order_time' => '10 Jan 2025 14:15'
             ]
         ];
     }
