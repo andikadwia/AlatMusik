@@ -1,3 +1,27 @@
+{{-- resources/views/auth/reset-password.blade.php --}}
+@if (session('status'))
+    <div class="alert alert-success">
+        {{ session('status') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,9 +63,8 @@
       </div>
       
       <!-- New password Form -->
-      <form method="post" action="{{ route('password.reset') }}" id="mengaturulangsandi-form" class="space-y-4">
+      <form method="post" action="{{ route('password.update') }}" id="mengaturulangsandi-form" class="space-y-4">
         @csrf
-        <input type="hidden" name="token" value="{{ $token }}">
         <input type="hidden" name="phone" value="{{ $phone }}">
         
         <!-- New password Field -->
