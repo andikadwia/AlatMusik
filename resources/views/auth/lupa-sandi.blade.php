@@ -43,7 +43,7 @@
       @endif
 
       <!-- Form -->
-      <form id="lupasandi-form" method="POST" action="{{ route('password.email') }}" class="space-y-4">
+      <form id="lupasandi-form" method="POST" action="{{ route('otp.request') }}" class="space-y-4">
         @csrf
         
         <!-- Phone Number Input -->
