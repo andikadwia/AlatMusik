@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 class ItemPemesanan extends Model
 {
     protected $table = 'item_pemesanan';
-    protected $primaryKey = 'id_item';
+
+    public function pemesanan()
+    {
+        return $this->belongsTo(Pemesanan::class, 'id_pemesanan');
+    }
 
     public function produk()
     {
