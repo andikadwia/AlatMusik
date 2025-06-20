@@ -21,8 +21,9 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PenyewaanController;
+use App\Http\Controllers\PeminjamanController;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -78,12 +79,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/profil/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
         
         // Other authenticated routes
-       
     
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
-    Route::get('/keranjang', [CartController::class, 'index'])->name('cart');
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
-    Route::get('payment', [PaymentController::class, 'index'])->name('payment');
 });
 
 
@@ -96,15 +94,20 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     // Alat Musik
     Route::resource('alatmusik', AlatMusikController::class);
 
-    Route::get('/dashboard/orders', [OrderController::class, 'index'])->name('dashboard.orders');
-    Route::put('dashboard/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('dashboard.peminjaman.update-status');
+// routes/web.php
+
+Route::prefix('dashboard')->group(function() {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+});
     
     // Orders
     Route::get('/dashboard/product', [ProductdashController::class, 'index'])->name('dashboard.produk.index');
     Route::get('/dashboard/product/create', [ProductdashController::class, 'create'])->name('dashboard.produk.create');
     Route::post('dashboard/product', [ProductdashController::class, 'store'])->name('dashboard.produk.store');
     Route::put('dashboard/product/{id}', [ProductdashController::class, 'update'])->name('dashboard.produk.update');
-    Route::post('dashboard/product/{id}', [ProductdashController::class, 'destroy'])->name('dashboard.produk.destroy');;
+    Route::delete('dashboard/product/{id}', [ProductdashController::class, 'destroy'])->name('dashboard.produk.destroy');;
     
     // Returns
     Route::get('dashboard/rental', [RentalController::class, 'index'])->name('dashboard.peminjaman.index');
@@ -121,3 +124,40 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 //produtcController
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/load-more', [HomeController::class, 'loadMore']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
+//order
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+});
+
+//payment
+// Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+// Route::get('/payment/{product_id}', [PaymentController::class, 'form'])->name('payment.form');
+// Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+
+//rental
+Route::middleware(['auth'])->group(function () {
+    // Route untuk menampilkan form sewa
+    Route::get('/penyewaan/form', [PenyewaanController::class, 'showCheckoutForm'])
+        ->name('penyewaan.form');
+    
+    // Route untuk proses sewa
+    Route::post('/penyewaan/proses', [PenyewaanController::class, 'processPenyewaan'])
+        ->name('penyewaan.proses');
+    
+    // Route sukses
+    Route::get('/penyewaan/sukses/{pemesanan_id}', [PenyewaanController::class, 'showSuccess'])
+        ->name('penyewaan.success');
+});
+
+// routes/web.php
+Route::post('/dashboard/peminjaman/{id}/update-status', [PeminjamanController::class, 'updateStatus'])
+    ->name('dashboard.peminjaman.update-status');
+
+
+
+
