@@ -7,20 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Pemesanan extends Model
 {
     protected $table = 'pemesanan';
-    
+    public $timestamps = true;
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $fillable = [
         'id_pengguna',
         'tanggal_pemesanan',
         'total_harga',
-        'bukti_pembayaran',
-        'foto_jaminan',
-        'jenis_jaminan',
         'status',
-        'tanggal_pembayaran',
         'tanggal_mulai',
         'tanggal_selesai',
-        'catatan',
-        'catatan_verifikasi'
+        'nama_pemesan',
+        'telepon_pemesan',
+        'catatan_verifikasi',
+        'dibuat_pada',
+        'diperbarui_pada'
     ];
 
     public function user()
@@ -60,4 +62,8 @@ class Pemesanan extends Model
     {
         return $this->status === 'ditolak';
     }
+public function verifikasiPembayaran()
+{
+    return $this->hasOne(VerifikasiPembayaran::class, 'id_pemesanan');
+}
 }

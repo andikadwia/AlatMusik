@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -6,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class ItemPemesanan extends Model
 {
     protected $table = 'item_pemesanan';
+
+    public $timestamps = false; // ✅ Nonaktifkan jika tidak ingin pakai timestamps
+
+protected $fillable = [
+    'id_pemesanan',
+    'id_produk',
+    'jumlah',
+    'hari_sewa',
+    'harga_per_hari', // ✅ tambahkan ini
+];
 
     public function pemesanan()
     {

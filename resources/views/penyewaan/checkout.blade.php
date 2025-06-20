@@ -30,6 +30,27 @@
         <input type="hidden" name="start_date" value="{{ $start_date }}">
         <input type="hidden" name="end_date" value="{{ $end_date }}">
 
+        <!-- Customer Information -->
+       <!-- Ganti bagian Informasi Pemesan dengan ini: -->
+<div class="mb-6">
+    <h3 class="text-lg font-medium mb-4">Informasi Pemesan</h3>
+    <div class="grid md:grid-cols-2 gap-4">
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900">Nama Pemesan</label>
+            <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                {{ auth()->user()->name }}
+            </div>
+            <input type="hidden" name="id_pengguna" value="{{ auth()->id() }}">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900">Nomor Telepon</label>
+            <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                {{ auth()->user()->telepon }}
+            </div>
+        </div>
+    </div>
+</div>
+
         <!-- Date Information -->
         <div class="grid md:grid-cols-2 md:gap-6 mb-5">
             <div>
@@ -145,11 +166,11 @@
             <button type="button" onclick="window.history.back()" class="text-white bg-red-300 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2">
                 Kembali
             </button>
-            <form action="{{ route('penyewaan.proses') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    <!-- Your form fields here -->
-    <button type="submit" class="btn btn-primary">Konfirmasi Pembayaran</button>
-</form>
+            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                Konfirmasi Pembayaran
+            </button>
+        </div>
+    </form>
     @endif
 </div>
 @endsection

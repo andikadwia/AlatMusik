@@ -22,7 +22,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PenyewaanController;
-Route::get('/', [HomeController::class, 'index'])->name('home');
+use App\Http\Controllers\PeminjamanController;
+
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -123,6 +124,8 @@ Route::prefix('dashboard')->group(function() {
 //produtcController
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/load-more', [HomeController::class, 'loadMore']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 
 //order
 Route::middleware(['auth'])->group(function () {
@@ -150,3 +153,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/penyewaan/sukses/{pemesanan_id}', [PenyewaanController::class, 'showSuccess'])
         ->name('penyewaan.success');
 });
+
+// routes/web.php
+Route::post('/dashboard/peminjaman/{id}/update-status', [PeminjamanController::class, 'updateStatus'])
+    ->name('dashboard.peminjaman.update-status');
+
+
+
+
