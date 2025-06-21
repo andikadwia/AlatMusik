@@ -18,5 +18,17 @@ class Product extends Model
         'kategori',
         'path_gambar',
     ];
+
+        // Mengambil array path gambar
+    public function getImagesAttribute()
+    {
+        return $this->path_gambar ? explode('|', $this->path_gambar) : [];
+    }
+
+    // Menyimpan array path gambar
+    public function setImagesAttribute($images)
+    {
+        $this->attributes['path_gambar'] = implode('|', $images);
+    }
 }
 

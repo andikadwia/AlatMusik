@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Insphony - Dashboard')
+@section('title', 'Insphony - Dasbor')
 
 @section('content')
 <div class="main-content">
@@ -13,7 +13,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Alat Musik</p>
-                        <h3 class="text-3xl font-bold">1</h3>
+                        <h3 class="text-3xl font-bold">{{ $totalProduk }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,7 +28,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pelanggan</p>
-                        <h3 class="text-3xl font-bold">2</h3>
+                        <h3 class="text-3xl font-bold">{{ $totalPelanggan }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,11 +37,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Card Total Pemesan -->
             <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pemesan</p>
-                        <h3 class="text-3xl font-bold">5</h3>
+                        <h3 class="text-3xl font-bold">{{ $totalPemesanan }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -56,7 +58,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Peminjam Aktif</p>
-                        <h3 class="text-3xl font-bold">3</h3>
+                        <h3 class="text-3xl font-bold">{{ $peminjamAktif }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +74,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pengembalian</p>
-                        <h3 class="text-3xl font-bold">4</h3>
+                        <h3 class="text-3xl font-bold">{{ $totalPengembalian }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,7 +89,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pendapatan</p>
-                        <h3 class="text-3xl font-bold">Rp 1.000.000</h3>
+                        <h3 class="text-3xl font-bold">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,7 +99,6 @@
                 </div>
             </div>
         </div>
-        <!-- Tabel atau konten lain -->
     </div>
 </div>
 @endsection

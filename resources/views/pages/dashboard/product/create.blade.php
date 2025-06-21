@@ -49,11 +49,19 @@
             
             <div class="form-control mb-6">
                 <label class="label">
-                    <span class="label-text">Gambar Produk</span>
+                    <span class="label-text">Gambar Produk (Maksimal 4)</span>
                 </label>
-                <input type="file" name="gambar" class="file-input file-input-bordered">
+                <input 
+                    type="file" 
+                    name="gambar[]" 
+                    class="file-input file-input-bordered w-full" 
+                    multiple 
+                    accept="image/*"
+                    required
+                >
+                <div class="text-sm text-gray-500 mt-1">Format: JPEG, PNG, JPG (Max 2MB per gambar)</div>
             </div>
-            
+                        
             <div class="modal-action">
                 <button type="button" class="btn" onclick="document.getElementById('modal-tambah').close()">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>

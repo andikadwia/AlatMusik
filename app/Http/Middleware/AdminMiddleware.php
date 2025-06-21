@@ -9,9 +9,12 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        // Cek apakah user admin, jika tidak redirect ke halaman lain
-        if (!auth()->user() || auth()->user()->role !== 'admin') {
-            return redirect('/login');
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized access.');
         }
 
         return $next($request);

@@ -89,9 +89,7 @@ Route::middleware('auth')->group(function () {
 
 // Admin Only Routes
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('pages.dashboard.index');
-    })->name('dashboard.index2');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Alat Musik
     Route::resource('alatmusik', AlatMusikController::class);
@@ -104,7 +102,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/dashboard/product/create', [ProductdashController::class, 'create'])->name('dashboard.produk.create');
     Route::post('dashboard/product', [ProductdashController::class, 'store'])->name('dashboard.produk.store');
     Route::put('dashboard/product/{id}', [ProductdashController::class, 'update'])->name('dashboard.produk.update');
-    Route::post('dashboard/product/{id}', [ProductdashController::class, 'destroy'])->name('dashboard.produk.destroy');;
+    Route::delete('dashboard/product/{id}', [ProductdashController::class, 'destroy'])->name('dashboard.produk.destroy');;
     
     // Returns
     Route::get('dashboard/rental', [RentalController::class, 'index'])->name('dashboard.peminjaman.index');
@@ -116,6 +114,8 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('dashboard/return/{id}', [ReturnController::class, 'show'])->name('pengembalian.show');
 
     Route::get('dashboard/customer', [CustomerController::class, 'index'])->name('dashboard.pelanggan.index');
+
+    Route::get('/dashboard/produk', [ProductdashController::class, 'index'])->name('dashboard.produk.index.search');
 });
 
 //produtcController
