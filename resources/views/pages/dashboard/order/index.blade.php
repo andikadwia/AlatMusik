@@ -28,28 +28,38 @@
               <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($p->tanggal_pemesanan)->format('d-m-Y H:i') }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                @switch($p->status)
-                  @case('menunggu')
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                      Menunggu
-                    </span>
-                    @break
-                  @case('disetujui')
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      Disetujui
-                    </span>
-                    @break
-                  @case('ditolak')
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                      Ditolak
-                    </span>
-                    @break
-                @endswitch
+                @if($p->verifikasiPembayaran)
+                  @switch($p->verifikasiPembayaran->status_verifikasi)
+                    @case('menunggu')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        Menunggu
+                      </span>
+                      @break
+                    @case('diterima')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        Disetujui
+                      </span>
+                      @break
+                    @case('ditolak')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        Ditolak
+                      </span>
+                      @break
+                  @endswitch
+                @else
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                    Belum Verifikasi
+                  </span>
+                @endif
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <button onclick="document.getElementById('modal-{{ $p->id }}').showModal()" 
                         class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md">
                   Detail
+                </button>
+                <button onclick="document.getElementById('modal-pembayaran-{{ $p->id }}').showModal()" 
+                    class="text-xs bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-md">
+                    Pembayaran
                 </button>
               </td>
             </tr>
@@ -87,23 +97,29 @@
         <p><span class="text-gray-600">Telepon:</span> {{ $p->telepon }}</p>
         <p>
           <span class="text-gray-600">Status:</span> 
-          @switch($p->status)
-            @case('menunggu')
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                Menunggu
-              </span>
-              @break
-            @case('disetujui')
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                Disetujui
-              </span>
-              @break
-            @case('ditolak')
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                Ditolak
-              </span>
-              @break
-          @endswitch
+          @if($p->verifikasiPembayaran)
+            @switch($p->verifikasiPembayaran->status_verifikasi)
+              @case('menunggu')
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                  Menunggu
+                </span>
+                @break
+              @case('diterima')
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Disetujui
+                </span>
+                @break
+              @case('ditolak')
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                  Ditolak
+                </span>
+                @break
+            @endswitch
+          @else
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+              Belum Verifikasi
+            </span>
+          @endif
         </p>
       </div>
       <div class="bg-gray-50 p-4 rounded-lg">
@@ -161,36 +177,132 @@
     </div>
     
     <div class="modal-action">
-      @if($p->status === 'menunggu')
-        <form action="{{ route('dashboard.peminjaman.update-status', $p->id) }}" method="POST" class="inline">
-          @csrf
-          @method('PUT')
-          <input type="hidden" name="status" value="disetujui">
-          <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md mr-2">
-            Setujui
-          </button>
-        </form>
+        @if($p->verifikasiPembayaran)
+            @if($p->verifikasiPembayaran->status_verifikasi !== 'ditolak')
+                <form action="{{ route('orders.update-status', $p->id) }}" method="POST" class="inline">
+                    @csrf
+                    <input type="hidden" name="status_verifikasi" value="ditolak">
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md mr-2">
+                        Tolak
+                    </button>
+                </form>
+            @endif
+
+            @if($p->verifikasiPembayaran->status_verifikasi === 'menunggu')
+                <form action="{{ route('orders.update-status', $p->id) }}" method="POST" class="inline">
+                    @csrf
+                    <input type="hidden" name="status_verifikasi" value="diterima">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md mr-2">
+                        Setujui
+                    </button>
+                </form>
+            @endif
+        @endif
         
-        <form action="{{ route('dashboard.peminjaman.update-status', $p->id) }}" method="POST" class="inline">
-          @csrf
-          @method('PUT')
-          <input type="hidden" name="status" value="ditolak">
-          <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md mr-2">
-            Tolak
-          </button>
+        <form method="dialog">
+            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                Tutup
+            </button>
         </form>
-      @endif
-      
-      <form method="dialog">
-        <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
-          Tutup
-        </button>
-      </form>
     </div>
   </div>
   <form method="dialog" class="modal-backdrop">
     <button>close</button>
   </form>
+</dialog>
+<dialog id="modal-pembayaran-{{ $p->id }}" class="modal">
+    <div class="modal-box max-w-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h3 class="text-lg font-bold">Detail Pembayaran #{{ $p->id }}</h3>
+                <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($p->tanggal_pemesanan)->format('d-m-Y H:i') }}</p>
+            </div>
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle">✕</button>
+            </form>
+        </div>
+        
+        <div class="space-y-4">
+            @if($p->verifikasiPembayaran)
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold mb-2">Status Pembayaran</h4>
+                    <p>
+                        @switch($p->verifikasiPembayaran->status_verifikasi)
+                            @case('menunggu')
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Menunggu Verifikasi
+                                </span>
+                                @break
+                            @case('diterima')
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Pembayaran Diterima
+                                </span>
+                                @break
+                            @case('ditolak')
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    Pembayaran Ditolak
+                                </span>
+                                @break
+                        @endswitch
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Bukti Pembayaran</h4>
+                        @if($p->verifikasiPembayaran->bukti_pembayaran)
+                            <img src="{{ asset($p->verifikasiPembayaran->bukti_pembayaran) }}" 
+                                 class="w-full h-auto rounded-lg border border-gray-200 mb-2">
+                            <a href="{{ asset($p->verifikasiPembayaran->bukti_pembayaran) }}" 
+                               target="_blank" 
+                               class="text-blue-500 text-sm">
+                                Lihat Ukuran Penuh
+                            </a>
+                        @else
+                            <p class="text-gray-500">Tidak ada bukti pembayaran</p>
+                        @endif
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Bukti Jaminan</h4>
+                        @if($p->verifikasiPembayaran->bukti_jaminan)
+                            <img src="{{ asset($p->verifikasiPembayaran->bukti_jaminan) }}" 
+                                 class="w-full h-auto rounded-lg border border-gray-200 mb-2">
+                            <a href="{{ asset($p->verifikasiPembayaran->bukti_jaminan) }}" 
+                               target="_blank" 
+                               class="text-blue-500 text-sm">
+                                Lihat Ukuran Penuh
+                            </a>
+                        @else
+                            <p class="text-gray-500">Tidak ada bukti jaminan</p>
+                        @endif
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold mb-2">Informasi Tambahan</h4>
+                    <p><span class="text-gray-600">Tanggal Pembayaran:</span> 
+                        {{ \Carbon\Carbon::parse($p->verifikasiPembayaran->tanggal_pembayaran)->format('d-m-Y H:i') }}
+                    </p>
+                </div>
+            @else
+                <div class="bg-gray-50 p-4 rounded-lg text-center">
+                    <p class="text-gray-500">Belum ada data pembayaran untuk pesanan ini</p>
+                </div>
+            @endif
+        </div>
+        
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                    Tutup
+                </button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
 </dialog>
 @endforeach
 @endsection

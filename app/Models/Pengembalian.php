@@ -11,13 +11,15 @@ class Pengembalian extends Model
 
     protected $table = 'pengembalian';
     protected $primaryKey = 'id';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_pemesanan',
         'tanggal_pengembalian',
         'kondisi',
         'catatan',
-        'denda'
+        'denda',
+        'dibuat_pada' 
     ];
 
     protected $casts = [

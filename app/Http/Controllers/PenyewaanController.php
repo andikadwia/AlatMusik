@@ -46,7 +46,7 @@ class PenyewaanController extends Controller
         $start_date = $request->start_date;
         $end_date = $request->end_date;
         $duration = $this->calculateDuration($start_date, $end_date);
-        $total_price = $this->calculateTotalPrice($product->harga, $start_date, $end_date);
+        $total_price = $this->calculateTotalPrice($product->harga, $duration);
 
         return view('penyewaan.checkout', compact(
             'product', 
@@ -78,12 +78,36 @@ class PenyewaanController extends Controller
             // Hitung durasi dan total harga
             $startDate = Carbon::parse($request->start_date);
             $endDate = Carbon::parse($request->end_date);
-            $duration = $endDate->diffInDays($startDate) + 1;
-            $totalPrice = $product->harga * $duration;
+            $duration = $this->calculateDuration($startDate, $endDate);
+            $totalPrice = $this->calculateTotalPrice($product->harga, $duration);
 
-            // Simpan file
-            $buktiPath = $request->file('bukti_pembayaran')->store('pembayaran', 'public');
-            $jaminanPath = $request->file('foto_jaminan')->store('jaminan', 'public');
+            // Pastikan folder pembayaran dan jaminan ada
+            if (!file_exists(public_path('pembayaran'))) {
+                mkdir(public_path('pembayaran'), 0755, true);
+            }
+            if (!file_exists(public_path('jaminan'))) {
+                mkdir(public_path('jaminan'), 0755, true);
+            }
+
+            // Simpan bukti pembayaran
+            $buktiPembayaran = $request->file('bukti_pembayaran');
+            $buktiName = time().'_'.$buktiPembayaran->getClientOriginalName();
+            $buktiPembayaran->move(public_path('pembayaran'), $buktiName);
+            $buktiPath = 'pembayaran/'.$buktiName;
+
+            // Simpan foto jaminan
+            $fotoJaminan = $request->file('foto_jaminan');
+            $jaminanName = time().'_'.$fotoJaminan->getClientOriginalName();
+            $fotoJaminan->move(public_path('jaminan'), $jaminanName);
+            $jaminanPath = 'jaminan/'.$jaminanName;
+
+            // Verifikasi penyimpanan file
+            if (!file_exists(public_path($buktiPath))) {
+                throw new \Exception("Gagal menyimpan bukti pembayaran");
+            }
+            if (!file_exists(public_path($jaminanPath))) {
+                throw new \Exception("Gagal menyimpan foto jaminan");
+            }
 
             // Buat pemesanan
             $pemesanan = Pemesanan::create([
@@ -92,7 +116,7 @@ class PenyewaanController extends Controller
                 'total_harga' => $totalPrice,
                 'tanggal_mulai' => $startDate,
                 'tanggal_selesai' => $endDate,
-                'status' => 'menunggu'
+                'status_penyewaan' => 'belum_dipinjam'
             ]);
 
             // Buat item pemesanan
@@ -110,7 +134,7 @@ class PenyewaanController extends Controller
                 'id_pemesanan' => $pemesanan->id,
                 'bukti_pembayaran' => $buktiPath,
                 'bukti_jaminan' => $jaminanPath,
-                'status_verifikasi' => 'menunggu',
+                'status_verifikasi' => 'diterima',
                 'tanggal_pembayaran' => now()
             ]);
 
@@ -119,7 +143,7 @@ class PenyewaanController extends Controller
 
             DB::commit();
 
-            return redirect()->route('home')
+            return redirect()->route('riwayat')
                    ->with('success', 'Pembayaran berhasil dikonfirmasi! Pemesanan Anda sedang diproses.');
 
         } catch (\Exception $e) {
@@ -165,15 +189,22 @@ class PenyewaanController extends Controller
     {
         $pemesanan = Pemesanan::findOrFail($id);
         
-        if ($pemesanan->status !== 'menunggu') {
+        if ($pemesanan->status_penyewaan !== 'belum_dipinjam') {
             return redirect()->back()
                 ->with('error', 'Pemesanan ini sudah diproses sebelumnya.');
         }
 
-        $pemesanan->update([
-            'status' => 'disetujui',
-            'tanggal_pembayaran' => now()
-        ]);
+        DB::transaction(function () use ($pemesanan) {
+            // Update status pemesanan
+            $pemesanan->update([
+                'status_penyewaan' => 'sedang_dipinjam'
+            ]);
+
+            // Update status verifikasi pembayaran
+            $pemesanan->verifikasiPembayaran()->update([
+                'status_verifikasi' => 'diterima'
+            ]);
+        });
 
         return redirect()->back()
             ->with('success', 'Pemesanan berhasil disetujui.');
@@ -186,9 +217,9 @@ class PenyewaanController extends Controller
             'catatan' => 'required|string|max:500'
         ]);
 
-        $pemesanan = Pemesanan::findOrFail($id);
+        $pemesanan = Pemesanan::with(['items', 'verifikasiPembayaran'])->findOrFail($id);
         
-        if ($pemesanan->status !== 'menunggu') {
+        if ($pemesanan->status_penyewaan !== 'belum_dipinjam') {
             return redirect()->back()
                 ->with('error', 'Pemesanan ini sudah diproses sebelumnya.');
         }
@@ -196,8 +227,13 @@ class PenyewaanController extends Controller
         DB::transaction(function () use ($pemesanan, $request) {
             // Update status pemesanan
             $pemesanan->update([
-                'status' => 'ditolak',
+                'status_penyewaan' => 'ditolak',
                 'catatan' => $request->catatan
+            ]);
+
+            // Update status verifikasi pembayaran
+            $pemesanan->verifikasiPembayaran()->update([
+                'status_verifikasi' => 'ditolak'
             ]);
 
             // Kembalikan stok produk
@@ -225,7 +261,10 @@ class PenyewaanController extends Controller
                             ->where('tanggal_selesai', '>=', $endDate);
                     });
             })
-            ->where('status', 'disetujui')
+            ->whereHas('verifikasiPembayaran', function($query) {
+                $query->where('status_verifikasi', 'diterima');
+            })
+            ->where('status_penyewaan', '!=', 'sudah_dikembalikan')
             ->count();
 
         return $conflictingOrders === 0;
@@ -238,9 +277,8 @@ class PenyewaanController extends Controller
         return $start->diffInDays($end) + 1;
     }
 
-    private function calculateTotalPrice($pricePerDay, $startDate, $endDate)
+    private function calculateTotalPrice($pricePerDay, $duration)
     {
-        $duration = $this->calculateDuration($startDate, $endDate);
         return $pricePerDay * $duration;
     }
 }

@@ -22,4 +22,9 @@ class Pelanggan extends Model
         'dibuat_pada' => 'datetime',
         'diperbarui_pada' => 'datetime'
     ];
+
+    public function verifikasiPembayaran()
+    {
+        return $this->hasMany(VerifikasiPembayaran::class);
+    }
 }
