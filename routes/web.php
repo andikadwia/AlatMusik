@@ -24,7 +24,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PenyewaanController;
 use App\Http\Controllers\PeminjamanController;
 
-
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     // Login Routes
@@ -82,6 +81,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
+    Route::get('payment', [PaymentController::class, 'index'])->name('payment');
 });
 
 
