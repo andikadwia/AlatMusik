@@ -8,22 +8,38 @@
     <!-- Flowbite CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <style>
-  /* Untuk semua browser modern */
-    html {
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE/Edge */
-    }
-    
-    /* Untuk Webkit (Chrome, Safari) */
-    html::-webkit-scrollbar {
-        display: none;
-    }
-    
-    body {
-        overflow-y: scroll; /* Pastikan scroll selalu ada (untuk layout stabil) */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling di iOS */
-    }
-</style>
+        /* Untuk semua browser modern */
+        html {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        
+        /* Untuk Webkit (Chrome, Safari) */
+        html::-webkit-scrollbar {
+            display: none;
+        }
+        
+        body {
+            overflow-y: scroll; /* Pastikan scroll selalu ada (untuk layout stabil) */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling di iOS */
+        }
+
+        /* Notification animations */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .animate-fade-out {
+            animation: fadeOut 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -56,6 +72,52 @@
     </main>
 
     @include('components.footer')
+
+    <!-- Notification System -->
+    @if(session('success'))
+    <div class="fixed top-4 right-4 z-50">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center animate-fade-in">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            {{ session('success') }}
+            <button onclick="this.parentElement.classList.add('animate-fade-out'); setTimeout(() => this.parentElement.remove(), 300)" class="ml-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="fixed top-4 right-4 z-50">
+        <div class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center animate-fade-in">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            {{ session('error') }}
+            <button onclick="this.parentElement.classList.add('animate-fade-out'); setTimeout(() => this.parentElement.remove(), 300)" class="ml-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    @endif
+
+    <script>
+        // Auto-hide notifications after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const notifications = document.querySelectorAll('[class*="fixed top-4 right-4"]');
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.querySelector('div').classList.add('animate-fade-out');
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
 
     <!-- Flowbite JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
