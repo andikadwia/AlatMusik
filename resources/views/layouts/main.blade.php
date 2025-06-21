@@ -192,5 +192,23 @@
         document.getElementById('modal-pengembalian').showModal();
     }
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#products-table tbody tr');
+            
+            rows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                row.style.display = productName.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>

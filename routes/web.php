@@ -24,7 +24,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PenyewaanController;
 use App\Http\Controllers\PeminjamanController;
 
-
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     // Login Routes
@@ -82,14 +81,13 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
+    Route::get('payment', [PaymentController::class, 'index'])->name('payment');
 });
 
 
 // Admin Only Routes
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('pages.dashboard.index');
-    })->name('dashboard.index2');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Alat Musik
     Route::resource('alatmusik', AlatMusikController::class);
@@ -119,6 +117,8 @@ Route::prefix('dashboard')->group(function() {
     Route::get('dashboard/return/{id}', [ReturnController::class, 'show'])->name('pengembalian.show');
 
     Route::get('dashboard/customer', [CustomerController::class, 'index'])->name('dashboard.pelanggan.index');
+
+    Route::get('/dashboard/produk', [ProductdashController::class, 'index'])->name('dashboard.produk.index.search');
 });
 
 //produtcController
