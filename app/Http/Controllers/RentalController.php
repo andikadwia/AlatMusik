@@ -15,9 +15,11 @@ class RentalController extends Controller
     public function index()
     {
         // Get approved rentals that haven't been returned
-        $rentals = Order::with(['pengguna', 'user'])
-            ->where('status', 'disetujui')
-            ->where('status_peminjaman', '!=', 'sudah_dikembalikan')
+        $rentals = Order::with(['user', 'verifikasiPembayaran'])
+            ->whereHas('verifikasiPembayaran', function($query) {
+                $query->where('status_verifikasi', 'diterima');
+            })
+            ->where('status_penyewaan', '!=', 'sudah_dikembalikan')
             ->orderBy('tanggal_pemesanan', 'desc')
             ->get()
             ->map(function ($rental) {
@@ -36,15 +38,17 @@ class RentalController extends Controller
     {
         $request->validate([
             'id_pemesanan' => 'required|exists:pemesanan,id',
-            'status_peminjaman' => 'required|in:belum_dipinjam,sedang_dipinjam'
+            'status_penyewaan' => 'required|in:belum_dipinjam,sedang_dipinjam'
         ]);
     
         try {
             $rental = Order::where('id', $request->id_pemesanan)
-                ->where('status', 'disetujui')
+                ->whereHas('verifikasiPembayaran', function($query) {
+                    $query->where('status_verifikasi', 'diterima');
+                })
                 ->firstOrFail();
     
-            $rental->update(['status_peminjaman' => $request->status_peminjaman]);
+            $rental->update(['status_penyewaan' => $request->status_penyewaan]);
     
             return redirect()->route('dashboard.peminjaman.index')->with('success', 'Status peminjaman berhasil diperbarui!');
         } catch (\Exception $e) {

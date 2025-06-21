@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pemesanan;
 use App\Models\Pengembalian;
-use App\Models\OrderItem;
+use App\Models\ItemPemesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -46,14 +46,16 @@ class ReturnController extends Controller
                 // Create return record
                 $return = Pengembalian::create([
                     'id_pemesanan' => $request->id_pemesanan,
+                    'tanggal_pengembalian' => now(), 
                     'kondisi' => $request->kondisi,
                     'catatan' => $request->catatan,
-                    'denda' => $request->denda ?? 0
+                    'denda' => $request->denda,
+                    'dibuat_pada' => now()
                 ]);
 
                 // Update rental status
                 $rental = Pemesanan::findOrFail($request->id_pemesanan);
-                $rental->update(['status_peminjaman' => 'sudah_dikembalikan']);
+                $rental->update(['status_penyewaan' => 'sudah_dikembalikan']);
 
                 // Restore stock if condition is good
                 if (in_array($request->kondisi, ['sangat_baik', 'baik'])) {
@@ -64,8 +66,10 @@ class ReturnController extends Controller
             });
 
             return redirect()->route('dashboard.return.index')->with('success', 'Pengembalian berhasil dicatat!');
-        } catch (\Exception $e) {
-            return redirect()->route('dashboard.return.index')->with('error', 'Gagal memproses pengembalian: ' . $e->getMessage());
+        }  catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withInput()
+               ->with('error', 'Gagal memproses pengembalian: ' . $e->getMessage());
         }
     }
 }

@@ -14,20 +14,24 @@ class Order extends Model
         'id_pengguna',
         'tanggal_pemesanan',
         'total_harga',
-        'status',
-        'catatan',
-        'status_peminjaman'
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'status_penyewaan',
+        'dibuat_pada',
+        'diperbarui_pada'
     ];
 
     protected $dates = [
         'tanggal_pemesanan',
+        'tanggal_mulai',
+        'tanggal_selesai',
         'dibuat_pada',
         'diperbarui_pada'
     ];
 
     protected $casts = [
-        'status' => 'string',
-        'status_peminjaman' => 'string'
+        'status_penyewaan' => 'string',
+        'total_harga' => 'decimal:2'
     ];
 
     public function user()
@@ -42,12 +46,12 @@ class Order extends Model
 
     public function pengembalian()
     {
-        return $this->hasOne(Pengembalian::class, 'id_pemesanan');
+        return $this->hasOne(pengembalian::class, 'id_pemesanan');
     }
 
-    public function pengguna()
+    public function verifikasiPembayaran()
     {
-        return $this->belongsTo(User::class, 'id_pengguna');
+        return $this->hasOne(VerifikasiPembayaran::class, 'id_pemesanan');
     }
 
     public function pelanggan()
@@ -55,8 +59,8 @@ class Order extends Model
         return $this->hasOne(Pelanggan::class, 'id_pengguna');
     }
 
-    public function pemesanan()
+    public function ulasan()
     {
-        return $this->belongsTo(Order::class, 'id_pemesanan');
+        return $this->hasMany(Ulasan::class, 'id_pemesanan');
     }
 }

@@ -89,10 +89,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Alat Musik
-    Route::resource('alatmusik', AlatMusikController::class);
-
-// routes/web.php
 
 Route::prefix('dashboard')->group(function() {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -110,7 +106,7 @@ Route::prefix('dashboard')->group(function() {
     // Returns
     Route::get('dashboard/rental', [RentalController::class, 'index'])->name('dashboard.peminjaman.index');
     Route::post('dashboard/peminjaman/update-status', [RentalController::class, 'updateStatusRental'])->name('dashboard.peminjaman.update-status-rental');
-    Route::post('dashboard/peminjaman/proses-pengembalian', [RentalController::class, 'prosesPengembalian'])->name('dashboard.peminjaman.proses-pengembalian');
+    Route::post('dashboard/peminjaman/proses-pengembalian', [ReturnController::class, 'processReturn'])->name('dashboard.peminjaman.proses-pengembalian');
     
     Route::get('/dashboard/return', [ReturnController::class, 'index'])->name('dashboard.return.index');
     Route::post('dashboard/return/proses', [ReturnController::class, 'prosesPengembalian'])->name('pengembalian.proses');
@@ -131,7 +127,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::post('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
 //payment

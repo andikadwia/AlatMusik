@@ -55,8 +55,12 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $return->id }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">#{{ $return->id_pemesanan }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $return->nama_pelanggan }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $return->tanggal_pemesanan }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $return->tanggal_pengembalian->format('d/m/Y H:i') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ \Carbon\Carbon::parse($return->tanggal_pemesanan)->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ \Carbon\Carbon::parse($return->tanggal_pengembalian)->format('d/m/Y H:i') }}
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @switch($return->kondisi)
                                     @case('sangat_baik')
@@ -85,8 +89,8 @@
                                 {{ $return->denda ? 'Rp ' . number_format($return->denda, 0, ',', '.') : '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <button onclick="showDetailModal({{ json_encode($return) }})" 
-                                        class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md">
+                                <button onclick="showDetailModal('{{ $return->id }}')" 
+                                        class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md transition-colors">
                                     Detail
                                 </button>
                             </td>
@@ -106,56 +110,82 @@
 </div>
 
 <!-- Detail Modal -->
-<div id="modal-detail" class="fixed z-10 inset-0 overflow-y-auto hidden">
+@foreach($returns as $return)
+<div id="modal-detail-{{ $return->id }}" class="fixed z-10 inset-0 overflow-y-auto hidden">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Detail Pengembalian</h3>
-                <div id="detail-content" class="space-y-2">
-                    <!-- Content will be filled by JavaScript -->
+            <div class="bg-white px-6 pt-6 pb-4">
+                <h3 class="text-xl font-semibold text-gray-900 mb-4 border-b pb-2">Detail Pengembalian</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="grid grid-cols-3 gap-2">
+                        <!-- Konten modal -->
+                        <div class="text-gray-500 font-medium">ID Pengembalian</div>
+                        <div class="col-span-2">{{ $return->id }}</div>
+                        
+                        <div class="text-gray-500 font-medium">No. Pemesanan</div>
+                        <div class="col-span-2">#{{ $return->id_pemesanan }}</div>
+                        
+                        <div class="text-gray-500 font-medium">Pelanggan</div>
+                        <div class="col-span-2">{{ $return->nama_pelanggan }}</div>
+                        
+                        <div class="text-gray-500 font-medium">Tanggal Pemesanan</div>
+                        <div class="col-span-2">{{ \Carbon\Carbon::parse($return->tanggal_pemesanan)->format('d/m/Y H:i') }}</div>
+                        
+                        <div class="text-gray-500 font-medium">Tanggal Pengembalian</div>
+                        <div class="col-span-2">{{ $return->tanggal_pengembalian->format('d/m/Y H:i') }}</div>
+                        
+                        <div class="text-gray-500 font-medium">Kondisi</div>
+                        <div class="col-span-2">
+                            @switch($return->kondisi)
+                                @case('sangat_baik')
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Sangat Baik</span>
+                                    @break
+                                @case('baik')
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Baik</span>
+                                    @break
+                                @case('rusak')
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Rusak</span>
+                                    @break
+                                @case('hilang')
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Hilang</span>
+                                    @break
+                                @default
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">-</span>
+                            @endswitch
+                        </div>
+                        
+                        <div class="text-gray-500 font-medium">Denda</div>
+                        <div class="col-span-2">{{ $return->denda ? 'Rp '.number_format($return->denda, 0, ',', '.') : '-' }}</div>
+                        
+                        <div class="text-gray-500 font-medium">Catatan</div>
+                        <div class="col-span-2">{{ $return->catatan ?? '-' }}</div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" onclick="closeModal('modal-detail')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+            <div class="bg-gray-50 px-6 py-4 flex justify-end">
+                <button onclick="closeModal('modal-detail-{{ $return->id }}')" 
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
                     Tutup
                 </button>
             </div>
         </div>
     </div>
 </div>
+@endforeach
 
 <script>
-    function showDetailModal(data) {
-        const content = document.getElementById('detail-content');
-        const kondisi = {
-            'sangat_baik': 'Sangat Baik',
-            'baik': 'Baik',
-            'rusak': 'Rusak',
-            'hilang': 'Hilang'
-        };
-        
-        content.innerHTML = `
-            <div class="space-y-2">
-                <p><strong>ID Pengembalian:</strong> ${data.id}</p>
-                <p><strong>No. Pemesanan:</strong> #${data.id_pemesanan}</p>
-                <p><strong>Pelanggan:</strong> ${data.nama_pelanggan}</p>
-                <p><strong>Tanggal Pemesanan:</strong> ${data.tanggal_pemesanan}</p>
-                <p><strong>Tanggal Pengembalian:</strong> ${new Date(data.tanggal_pengembalian).toLocaleString()}</p>
-                <p><strong>Kondisi:</strong> ${kondisi[data.kondisi] || '-'}</p>
-                <p><strong>Denda:</strong> ${data.denda ? 'Rp ' + data.denda.toLocaleString('id-ID') : '-'}</p>
-                <p><strong>Catatan:</strong> ${data.catatan || '-'}</p>
-            </div>
-        `;
-        
-        document.getElementById('modal-detail').classList.remove('hidden');
-    }
-    
+    // Fungsi untuk menutup modal
     function closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
+    }
+    
+    // Fungsi untuk membuka modal
+    function showDetailModal(modalId) {
+        document.getElementById('modal-detail-' + modalId).classList.remove('hidden');
     }
 </script>
 @endsection

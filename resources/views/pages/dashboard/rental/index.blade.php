@@ -26,7 +26,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $rental->nama_pelanggan }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $rental->tanggal_pemesanan }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @switch($rental->status_peminjaman)
+                                @switch($rental->status_penyewaan)
                                     @case('belum_dipinjam')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                             Belum Dipinjam
@@ -44,12 +44,12 @@
                                 @endswitch
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <button onclick="showUpdateStatusModal({{ $rental->id }}, '{{ $rental->status_peminjaman }}')" 
+                                <button onclick="showUpdateStatusModal({{ $rental->id }}, '{{ $rental->status_penyewaan }}')" 
                                         class="text-xs bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
                                     Ubah Status
                                 </button>
                                 
-                                @if ($rental->status_peminjaman == 'sedang_dipinjam')
+                                @if ($rental->status_penyewaan == 'sedang_dipinjam')
                                 <button onclick="showPengembalianModal({{ $rental->id }})"
                                     class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md">
                                     Proses Pengembalian

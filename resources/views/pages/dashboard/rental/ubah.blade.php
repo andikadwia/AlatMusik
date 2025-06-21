@@ -16,7 +16,7 @@
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="status_peminjaman">
                             Status Peminjaman
                         </label>
-                        <select name="status_peminjaman" id="update-status-select" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <select name="status_penyewaan" id="update-status-select" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                             <option value="belum_dipinjam">Belum Dipinjam</option>
                             <option value="sedang_dipinjam">Sedang Dipinjam</option>
                         </select>

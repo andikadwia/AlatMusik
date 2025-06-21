@@ -30,13 +30,15 @@ class DashboardController extends BaseController // Extends BaseController
         $totalPemesanan = order::count();
         
         // Peminjam aktif (pemesanan dengan status sedang_dipinjam)
-        $peminjamAktif = order::where('status_peminjaman', 'sedang_dipinjam')->count();
+        $peminjamAktif = order::where('status_penyewaan', 'sedang_dipinjam')->count();
         
         // Total pengembalian
         $totalPengembalian = Pengembalian::count();
         
         // Total pendapatan (jumlah total_harga dari semua pemesanan yang disetujui)
-        $totalPendapatan = order::where('status', 'disetujui')->sum('total_harga');
+        $totalPendapatan = Order::whereHas('verifikasiPembayaran', function($query) {
+            $query->where('status_verifikasi', 'diterima');
+        })->sum('total_harga');
         
         return view('pages.dashboard.index', compact(
             'totalProduk',
