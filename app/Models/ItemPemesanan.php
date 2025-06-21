@@ -7,7 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class ItemPemesanan extends Model
 {
     protected $table = 'item_pemesanan';
-    protected $primaryKey = 'id_item';
+
+    public $timestamps = false; // ✅ Nonaktifkan jika tidak ingin pakai timestamps
+
+protected $fillable = [
+    'id_pemesanan',
+    'id_produk',
+    'jumlah',
+    'hari_sewa',
+    'harga_per_hari', // ✅ tambahkan ini
+];
+
+    public function pemesanan()
+    {
+        return $this->belongsTo(Pemesanan::class, 'id_pemesanan');
+    }
 
     public function produk()
     {
