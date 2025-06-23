@@ -19,20 +19,25 @@
         @endif
     </div>
 
-    <!-- Product Image with smooth zoom -->
-    <div class="relative h-64 overflow-hidden bg-gray-50">
-        <img src="{{ $product->image }}" alt="{{ $product->name }}" 
-             class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
-        
-        <!-- Quick Actions - Fade in on hover -->
-        <div class="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/5">
-            <button class="rounded-full bg-white p-2 text-gray-700 hover:bg-gray-50 shadow-sm transition-transform duration-200 hover:scale-110">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </button>
-        </div>
+   <div class="group relative h-64 overflow-hidden bg-gray-50 rounded-lg">
+    <!-- Container Gambar dengan Object-Cover yang Disesuaikan -->
+    <div class="flex h-full items-center justify-center p-4"> <!-- Padding untuk jarak -->
+        <img 
+    src="{{ $product->image }}" 
+    alt="{{ $product->name }}" 
+    class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110" 
+/>
     </div>
+
+    <!-- Overlay Aksi pada Hover -->
+    <div class="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/10">
+        <button class="rounded-full bg-white p-2 text-gray-700 shadow-md hover:bg-gray-100 transition-all hover:scale-110">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </button>
+    </div>
+</div>
 
     <!-- Product Details -->
     <div class="p-4">
