@@ -72,15 +72,15 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-        // Profile routes
-        Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
-        Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update');
-        Route::post('/profil/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profil/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profil/update-profil', [ProfileController::class, 'updateFotoProfil'])->name('profile.update-profil');
+    Route::post('/profil/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
         
         // Other authenticated routes
-    
-    Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
+    Route::get('/pemesanan/{id}/invoice', [RiwayatController::class, 'invoice'])->name('pemesanan.invoice');
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');
 });
 
