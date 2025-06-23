@@ -12,24 +12,34 @@
             Kembali ke Beranda
         </button>
         <div class="flex flex-col md:flex-row gap-8">
-            
-<!-- Sidebar Profile -->
-<div class="w-full md:w-64 lg:w-80 flex-shrink-0">
-    <div class="bg-white rounded-lg shadow-sm p-6 h-[calc(114vh-4rem)] flex flex-col">
+            <!-- Sidebar Profile -->
+            <div class="w-full md:w-64 lg:w-80 flex-shrink-0">
+                <div class="bg-white rounded-lg shadow-sm p-6 h-[calc(114vh-4rem)] flex flex-col">
                     <!-- User Profile Image and Info -->
                     <div class="flex flex-col items-center">
                         <div class="relative mb-4">
-                            <img src="{{ $user->avatar ? asset('storage/avatars/'.$user->avatar) : asset('images/gitar.jpg') }}" 
-                                 alt="Avatar" 
-                                 class="w-24 h-24 rounded-full object-cover border-2 border-primary">
-                            <label for="avatar-upload" class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors">
+                            <img src="{{ $user->foto_profil ? asset($user->foto_profil) : asset('images/gitar.jpg') }}" 
+                                alt="Foto Profil" 
+                                class="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                                id="profile-image-preview">
+                            <label for="foto_profil-upload" class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                             </label>
-                            <input type="file" id="avatar-upload" name="avatar" class="hidden" form="profile-form">
+                            <form id="profile-form" method="POST" action="{{ route('profile.update-profil') }}" enctype="multipart/form-data">
+                                @csrf                   
+                                <input type="file" id="foto_profil-upload" name="foto_profil" class="hidden" accept="image/jpeg,image/png,image/jpg">
+                            </form>
                         </div>
+                            @if($user->foto_profil)
+                                <a href="{{ asset($user->foto_profil) }}" 
+                                target="_blank" 
+                                class="text-blue-500 text-sm">
+                                    Lihat Foto Ukuran Penuh
+                                </a>
+                            @endif
                         <h2 class="text-xl font-bold text-gray-800">{{ $user->name }}</h2>
                         <h3 class="text-gray-600 text-sm">{{ '' . $user->email }}</h3>
                     </div>
@@ -194,20 +204,73 @@
     </div>
 </div>
 
-<!-- Avatar Preview Script -->
+<!-- Tambahkan modal konfirmasi -->
+<div id="confirm-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full">
+        <h3 class="text-lg font-medium mb-4">Konfirmasi Ganti Foto Profil</h3>
+        <p class="mb-6">Anda yakin ingin mengganti foto profil?</p>
+        <div class="flex justify-end space-x-3">
+            <button id="cancel-change" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                Batal
+            </button>
+            <button id="confirm-change" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
+                Ya, Ganti
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Tambahkan notifikasi -->
+@if(session('foto_updated'))
+<div id="foto-notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg flex items-center">
+    <span>Foto profil berhasil diubah!</span>
+    <button onclick="document.getElementById('foto-notification').remove()" class="ml-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+    </button>
+</div>
+@endif
+
+<!-- Script untuk konfirmasi dan preview -->
 <script>
-    document.getElementById('avatar-upload').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.querySelector('.relative.mb-4 img').src = e.target.result;
+    document.addEventListener('DOMContentLoaded', function() {
+        const fotoInput = document.getElementById('foto_profil-upload');
+        const profileImage = document.getElementById('profile-image-preview');
+        
+        // Trigger file input ketika gambar profil diklik
+        profileImage.addEventListener('click', function() {
+            fotoInput.click();
+        });
+
+        // Preview gambar saat dipilih dan auto-submit
+        fotoInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                
+                // Validasi client-side
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Hanya file JPEG/JPG/PNG yang diperbolehkan');
+                    return;
+                }
+                
+                if (file.size > 2 * 1024 * 1024) { // 2MB
+                    alert('Ukuran file maksimal 2MB');
+                    return;
+                }
+                
+                // Tampilkan preview
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    profileImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                // Auto-submit form
+                document.getElementById('profile-form').submit();
             }
-            reader.readAsDataURL(file);
-            
-            // Auto-submit form when file is selected
-            document.getElementById('profile-form').submit();
-        }
+        });
     });
 </script>
 @endsection

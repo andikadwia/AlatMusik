@@ -57,6 +57,38 @@ class ProfileController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
 
+    public function updateFotoProfil(Request $request)
+    {
+        $request->validate([
+            'foto_profil' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = auth()->user();
+        $uploadPath = public_path('fotoprofil');
+
+        // Buat folder jika belum ada
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        // Hapus foto lama jika ada
+        if ($user->foto_profil && file_exists(public_path($user->foto_profil))) {
+            unlink(public_path($user->foto_profil));
+        }
+
+        // Upload foto baru
+        $image = $request->file('foto_profil');
+        $fileName = time().'_'.$image->getClientOriginalName();
+        $image->move($uploadPath, $fileName);
+        
+        // Update hanya foto profil
+        $user->update([
+            'foto_profil' => 'fotoprofil/'.$fileName
+        ]);
+
+        return back()->with('success', 'Foto Profil berhasil diubah!');
+    }
+
     public function updatePassword(Request $request)
     {
         $request->validate([

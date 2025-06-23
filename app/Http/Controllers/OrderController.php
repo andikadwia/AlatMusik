@@ -13,7 +13,7 @@ class OrderController extends Controller
     public function index()
     {
         $pemesanan = DB::table('pemesanan as p')
-            ->join('users as u', 'p.id_pengguna', '=', 'u.id')
+            ->join('pengguna as u', 'p.id_pengguna', '=', 'u.id')
             ->leftJoin('verifikasi_pembayaran as vp', 'p.id', '=', 'vp.id_pemesanan')
             ->select('p.*', 'u.username as nama_pelanggan', 'u.telepon', 'vp.status_verifikasi')
             ->orderByDesc('p.tanggal_pemesanan')
