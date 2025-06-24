@@ -96,7 +96,7 @@
                                 $status = 'Menunggu Pembayaran';
                                 $statusClass = 'bg-gray-100 text-gray-800';
                             }
-                            
+
                             // Durasi
                             $duration = '-';
                             if ($pemesanan->tanggal_mulai && $pemesanan->tanggal_selesai) {
@@ -160,17 +160,63 @@
                                     Detail
                                 </button>
                                 <a href="{{ route('pemesanan.invoice', $pemesanan->id) }}" 
-                                   class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                                    class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
                                     Unduh Invoice
                                 </a>
-                                @if($status == 'Menunggu Pembayaran')
-                                    <button class="px-3 py-1 bg-primary text-white text-sm rounded-lg hover:bg-primary-dark transition-colors">
-                                        Bayar Sekarang
-                                    </button>
-                                    <button class="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition-colors">
-                                        Batalkan
-                                    </button>
-                                @endif
+                                    <!-- Tombol Beri Ulasan tanpa syarat status -->
+    <button onclick="document.getElementById('ulasan-form-{{ $pemesanan->id }}').classList.toggle('hidden')"
+            class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+        Beri Ulasan
+    </button>
+</div>
+<div id="ulasan-form-{{ $pemesanan->id }}" class="mt-4 border p-6 rounded-lg bg-white shadow-sm hidden">
+    <h3 class="text-center text-lg font-bold mb-4">Ulasan</h3>
+    
+    <form action="{{ route('ulasan.store') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
+        <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
+
+        <!-- Rating -->
+        <label for="rating-{{ $pemesanan->id }}" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+        <div class="flex justify-center mb-4" id="rating-stars-{{ $pemesanan->id }}">
+            @for ($i = 1; $i <= 5; $i++)
+                <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
+                     class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform text-yellow-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                </svg>
+            @endfor
+        </div>
+        <input type="hidden" name="rating" id="rating-input-{{ $pemesanan->id }}" required>
+
+        <!-- Komentar -->
+        <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
+        <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
+                  class="w-full border border-gray-300 p-3 rounded-lg mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400" required></textarea>
+
+        <button type="submit" 
+                class="w-full bg-[#a47a4e] hover:bg-[#8b623a] text-white py-2 rounded-lg font-semibold transition-colors">
+            Kirim
+        </button>
+    </form>
+</div>
+
+<script>
+    // Bintang interaktif per pemesanan
+    document.querySelectorAll('#rating-stars-{{ $pemesanan->id }} .star').forEach(star => {
+        star.addEventListener('click', function () {
+            const selectedValue = this.getAttribute('data-value');
+            document.getElementById('rating-input-{{ $pemesanan->id }}').value = selectedValue;
+
+            const stars = document.querySelectorAll('#rating-stars-{{ $pemesanan->id }} .star');
+            stars.forEach((s, index) => {
+                s.setAttribute('fill', index < selectedValue ? 'currentColor' : 'none');
+            });
+        });
+    });
+</script>
+
                             </div>
                         </div>
                         @empty

@@ -23,6 +23,7 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PenyewaanController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\UlasanController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -154,6 +155,6 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/dashboard/peminjaman/{id}/update-status', [PeminjamanController::class, 'updateStatus'])
     ->name('dashboard.peminjaman.update-status');
 
-
+Route::post('/ulasan', [UlasanController::class, 'store'])->middleware('auth')->name('ulasan.store');
 
 
