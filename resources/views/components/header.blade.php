@@ -49,9 +49,9 @@
                     <div class="relative group">
                         <button id="user-menu-button" class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors duration-200">
                             <!-- Profile picture or icon -->
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white">
-                                @if(Auth::user()->profile_photo_path)
-                                    <img src="{{ Auth::user()->profile_photo_path }}" alt="Profile" class="w-full h-full rounded-full object-cover">
+                           <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white overflow-hidden">
+                                @if(Auth::user()->foto_profil)
+                                    <img src="{{ asset(Auth::user()->foto_profil) }}" alt="Profile" class="w-full h-full object-cover">
                                 @else
                                     <span class="text-sm font-medium">
                                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}

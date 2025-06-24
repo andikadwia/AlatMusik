@@ -7,10 +7,13 @@ use App\Models\Product;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil 6 produk pertama dari database
-        $products = Product::query()
+        $search = $request->input('search');
+        $category = $request->input('category');
+        
+        // Query produk dengan filter
+        $productsQuery = Product::query()
             ->select([
                 'id',
                 'nama as name',
@@ -21,8 +24,17 @@ class HomeController extends Controller
                 'rating_rata as rating',
                 'total_ulasan as review_count',
                 'path_gambar as image'
-            ])
-            ->orderBy('id', 'asc')
+            ]);
+            
+        if ($search) {
+            $productsQuery->where('nama', 'like', '%'.$search.'%');
+        }
+        
+        if ($category && $category !== 'Semua Kategori') {
+            $productsQuery->where('kategori', $category);
+        }
+        
+        $products = $productsQuery->orderBy('id', 'asc')
             ->take(6)
             ->get();
 
@@ -79,15 +91,17 @@ class HomeController extends Controller
             ]
         ];
 
-        return view('pages.home', compact('products', 'requirements', 'reviews'));
+        return view('pages.home', compact('products', 'requirements', 'reviews', 'search', 'category'));
     }
 
     public function loadMore(Request $request)
     {
         $offset = $request->input('offset', 6);
         $limit = 6;
+        $search = $request->input('search');
+        $category = $request->input('category');
 
-        $products = Product::query()
+        $productsQuery = Product::query()
             ->select([
                 'id',
                 'nama as name',
@@ -98,15 +112,23 @@ class HomeController extends Controller
                 'rating_rata as rating',
                 'total_ulasan as review_count',
                 'path_gambar as image'
-            ])
-            ->orderBy('id', 'asc')
+            ]);
+            
+        if ($search) {
+            $productsQuery->where('nama', 'like', '%'.$search.'%');
+        }
+        
+        if ($category && $category !== 'Semua Kategori') {
+            $productsQuery->where('kategori', $category);
+        }
+            
+        $products = $productsQuery->orderBy('id', 'asc')
             ->skip($offset)
             ->take($limit)
             ->get();
 
         $html = '';
         foreach ($products as $product) {
-            // Pastikan kamu membuat komponen blade untuk menampilkan 1 produk (misal 'components.product-card')
             $html .= view('components.product-card', ['product' => $product])->render();
         }
 

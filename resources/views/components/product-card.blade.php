@@ -21,13 +21,16 @@
 
    <div class="group relative h-64 overflow-hidden bg-gray-50 rounded-lg">
     <!-- Container Gambar dengan Object-Cover yang Disesuaikan -->
-    <div class="flex h-full items-center justify-center p-4"> <!-- Padding untuk jarak -->
+<div class="flex h-full items-center justify-center p-4"> <!-- Padding untuk jarak -->
+        @php
+            $images = explode('|', $product->image);
+            $firstImage = $images[0];
+        @endphp
         <img 
-    src="{{ $product->image }}" 
-    alt="{{ $product->name }}" 
-    class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110" 
-/>
-    </div>
+        src="{{ asset($firstImage) }}" 
+        alt="{{ $product->name }}" 
+        class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"/>
+    </div>
 
     <!-- Overlay Aksi pada Hover -->
     <div class="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/10">
