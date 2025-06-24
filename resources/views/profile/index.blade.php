@@ -17,11 +17,22 @@
                 <div class="bg-white rounded-lg shadow-sm p-6 h-[calc(114vh-4rem)] flex flex-col">
                     <!-- User Profile Image and Info -->
                     <div class="flex flex-col items-center">
-                        <div class="relative mb-4">
-                            <img src="{{ $user->foto_profil ? asset($user->foto_profil) : asset('images/gitar.jpg') }}" 
-                                alt="Foto Profil" 
-                                class="w-24 h-24 rounded-full object-cover border-2 border-primary"
-                                id="profile-image-preview">
+                        <div class="relative mb-4 group">
+                            @if($user->foto_profil)
+                            <div class="relative cursor-pointer" id="profile-image-container">
+                                <img src="{{ asset($user->foto_profil) }}" 
+                                    alt="Foto Profil" 
+                                    class="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                                    id="profile-image-preview">
+                            </div>
+                            @else
+                            <div class="relative">
+                                <img src="{{ asset('images/gitar.jpg') }}" 
+                                    alt="Foto Profil Default" 
+                                    class="w-24 h-24 rounded-full object-cover border-2 border-primary">
+                            </div>
+                            @endif
+                            
                             <label for="foto_profil-upload" class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -33,13 +44,6 @@
                                 <input type="file" id="foto_profil-upload" name="foto_profil" class="hidden" accept="image/jpeg,image/png,image/jpg">
                             </form>
                         </div>
-                            @if($user->foto_profil)
-                                <a href="{{ asset($user->foto_profil) }}" 
-                                target="_blank" 
-                                class="text-blue-500 text-sm">
-                                    Lihat Foto Ukuran Penuh
-                                </a>
-                            @endif
                         <h2 class="text-xl font-bold text-gray-800">{{ $user->name }}</h2>
                         <h3 class="text-gray-600 text-sm">{{ '' . $user->email }}</h3>
                     </div>
@@ -204,19 +208,15 @@
     </div>
 </div>
 
-<!-- Tambahkan modal konfirmasi -->
-<div id="confirm-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 max-w-sm w-full">
-        <h3 class="text-lg font-medium mb-4">Konfirmasi Ganti Foto Profil</h3>
-        <p class="mb-6">Anda yakin ingin mengganti foto profil?</p>
-        <div class="flex justify-end space-x-3">
-            <button id="cancel-change" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                Batal
-            </button>
-            <button id="confirm-change" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
-                Ya, Ganti
-            </button>
-        </div>
+<!-- Lightbox Modal -->
+<div id="image-lightbox" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+    <div class="relative max-w-4xl w-full">
+        <button id="close-lightbox" class="absolute top-4 right-4 text-white hover:text-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <img id="lightbox-image" src="" alt="Foto Profil" class="max-h-[90vh] mx-auto">
     </div>
 </div>
 
@@ -232,15 +232,38 @@
 </div>
 @endif
 
-<!-- Script untuk konfirmasi dan preview -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const fotoInput = document.getElementById('foto_profil-upload');
         const profileImage = document.getElementById('profile-image-preview');
-        
-        // Trigger file input ketika gambar profil diklik
-        profileImage.addEventListener('click', function() {
-            fotoInput.click();
+        const profileImageContainer = document.getElementById('profile-image-container');
+        const lightbox = document.getElementById('image-lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const closeLightbox = document.getElementById('close-lightbox');
+
+        // Lightbox functionality
+        if (profileImageContainer && lightbox) {
+            profileImageContainer.addEventListener('click', function() {
+                if ("{{ $user->foto_profil }}") {
+                    lightboxImage.src = "{{ asset($user->foto_profil) }}";
+                    lightbox.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        }
+
+        // Close lightbox
+        closeLightbox.addEventListener('click', function() {
+            lightbox.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close when clicking outside image
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                lightbox.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
         });
 
         // Preview gambar saat dipilih dan auto-submit
@@ -263,7 +286,9 @@
                 // Tampilkan preview
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    profileImage.src = event.target.result;
+                    if (profileImage) {
+                        profileImage.src = event.target.result;
+                    }
                 };
                 reader.readAsDataURL(file);
                 

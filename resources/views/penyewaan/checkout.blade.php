@@ -4,7 +4,7 @@
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm">
     <h2 class="text-lg font-semibold mb-6">Form Penyewaan</h2>
 
-    @if(!isset($product) || !isset($start_date) || !isset($end_date))
+    @if(!isset($product) || !isset($start_date) || !isset($end_date) || !isset($quantity))
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
             <strong>Error!</strong> Data tidak lengkap. Silakan kembali ke halaman produk.
             <a href="{{ url()->previous() }}" class="text-blue-500 underline">Kembali</a>
@@ -15,41 +15,49 @@
         
         <!-- Product Information -->
         <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div class="flex items-start gap-4">
-                <img src="{{ asset($product['path_gambar']) }}" alt="{{ $product['name'] }}" class="w-20 h-20 object-cover rounded-lg">
-                <div>
-                    <h3 class="font-medium">{{ $product->nama }}</h3>
-                    <p class="text-sm text-gray-600">{{ $product->kategori }}</p>
-                    <p class="text-sm font-medium mt-1">Rp {{ number_format($product->harga, 0, ',', '.') }} / hari</p>
-                </div>
-            </div>
+    <div class="flex items-start gap-4">
+        @php
+            $images = explode('|', $product->path_gambar);
+            $firstImage = $images[0];
+        @endphp
+        <div class="relative w-20 h-20 overflow-hidden rounded-lg">
+            <img 
+                src="{{ asset($firstImage) }}" 
+                alt="{{ $product->nama }}" 
+                class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"/>
         </div>
+        <div>
+            <h3 class="font-medium">{{ $product->nama }}</h3>
+            <p class="text-sm text-gray-600">{{ $product->kategori }}</p>
+            <p class="text-sm font-medium mt-1">Rp {{ number_format($product->harga, 0, ',', '.') }} / hari</p>
+        </div>
+    </div>
+</div>
         
         <!-- Hidden fields -->
         <input type="hidden" name="product_id" value="{{ $product->id }}">
         <input type="hidden" name="start_date" value="{{ $start_date }}">
         <input type="hidden" name="end_date" value="{{ $end_date }}">
+        <input type="hidden" name="quantity" value="{{ $quantity }}">
 
         <!-- Customer Information -->
-       <!-- Ganti bagian Informasi Pemesan dengan ini: -->
-<div class="mb-6">
-    <h3 class="text-lg font-medium mb-4">Informasi Pemesan</h3>
-    <div class="grid md:grid-cols-2 gap-4">
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-900">Nama Pemesan</label>
-            <div class="p-2 bg-gray-50 rounded border border-gray-200">
-                {{ auth()->user()->name }}
+        <div class="mb-6">
+            <h3 class="text-lg font-medium mb-4">Informasi Pemesan</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Nama Pemesan</label>
+                    <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                        {{ auth()->user()->name }}
+                    </div>
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900">Nomor Telepon</label>
+                    <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                        {{ auth()->user()->telepon }}
+                    </div>
+                </div>
             </div>
-            <input type="hidden" name="id_pengguna" value="{{ auth()->id() }}">
         </div>
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-900">Nomor Telepon</label>
-            <div class="p-2 bg-gray-50 rounded border border-gray-200">
-                {{ auth()->user()->telepon }}
-            </div>
-        </div>
-    </div>
-</div>
 
         <!-- Date Information -->
         <div class="grid md:grid-cols-2 md:gap-6 mb-5">
@@ -67,8 +75,12 @@
             </div>
         </div>
 
-        <!-- Duration and Price Calculation -->
+        <!-- Rental Summary -->
         <div class="mb-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="flex justify-between py-2">
+                <span>Jumlah</span>
+                <span>{{ $quantity }} Unit</span>
+            </div>
             <div class="flex justify-between py-2">
                 <span>Durasi Sewa</span>
                 <span>{{ $duration }} Hari</span>
@@ -82,8 +94,7 @@
         <!-- Guarantee Section -->
         <div class="mb-5">
             <label for="jaminan" class="block mb-2 text-sm font-medium text-gray-900">Jenis Jaminan</label>
-            <select id="jaminan" name="jenis_jaminan" 
-                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+            <select id="jaminan" name="jenis_jaminan" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                 <option value="" selected disabled>Pilih Jaminan</option>
                 <option value="ktp">KTP</option>
                 <option value="sim">SIM</option>
@@ -153,12 +164,6 @@
                     <img id="preview-image-bukti" class="h-32 rounded-md">
                 </div>
             </div>
-            
-            <!-- Payment Status -->
-            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-                <div class="font-medium">Status: Menunggu pembayaran</div>
-                <div class="text-sm text-gray-700">Harap segera lakukan pembayaran sebelum batas waktu</div>
-            </div>
         </div>
         
         <!-- Action Buttons -->
@@ -186,14 +191,12 @@ document.addEventListener('DOMContentLoaded', function() {
     buktiInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            // Validate file size (max 2MB)
             if (file.size > 2 * 1024 * 1024) {
                 alert('Ukuran file terlalu besar. Maksimal 2MB.');
                 this.value = '';
                 return;
             }
             
-            // Validate file type
             const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!validTypes.includes(file.type)) {
                 alert('Format file tidak valid. Hanya JPG, JPEG, atau PNG yang diperbolehkan.');
@@ -218,14 +221,12 @@ document.addEventListener('DOMContentLoaded', function() {
     jaminanInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            // Validate file size (max 2MB)
             if (file.size > 2 * 1024 * 1024) {
                 alert('Ukuran file terlalu besar. Maksimal 2MB.');
                 this.value = '';
                 return;
             }
             
-            // Validate file type
             const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!validTypes.includes(file.type)) {
                 alert('Format file tidak valid. Hanya JPG, JPEG, atau PNG yang diperbolehkan.');
@@ -246,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            // Show loading indicator
             const submitButton = form.querySelector('button[type="submit"]');
             if (submitButton) {
                 submitButton.disabled = true;

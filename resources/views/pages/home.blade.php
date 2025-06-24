@@ -55,21 +55,21 @@
     <section id="produk" class="py-16">
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-semibold mb-8">Produk</h2>
-            <div class="flex flex-col md:flex-row justify-between items-center p-5 bg-white rounded-lg shadow">
+            <form id="filter-form" class="flex flex-col md:flex-row justify-between items-center p-5 bg-white rounded-lg shadow">
                 <div class="flex-grow mr-2 mb-4 md:mb-0">
-                    <input type="text" placeholder="Cari alat musik..." class="bg-white border border-[#a08963] text-gray-900 rounded-lg focus:ring-[#a08963] focus:border-[#a08963] block w-full p-2.5 transition-all duration-200">
+                    <input type="text" name="search" id="search-input" value="{{ $search ?? '' }}" placeholder="Cari alat musik..." class="bg-white border border-[#a08963] text-gray-900 rounded-lg focus:ring-[#a08963] focus:border-[#a08963] block w-full p-2.5 transition-all duration-200">
                 </div>
                 <div class="w-full md:w-48 mr-2 mb-4 md:mb-0">
-                    <select class="bg-white border border-[#a08963] text-[#a08963] rounded-lg focus:ring-[#a08963] focus:border-[#a08963] block w-full p-2.5 transition-all duration-200">
-                        <option selected>Semua Kategori</option>
-                        <option>Elektrofon</option>
-                        <option>Aerofon</option>
-                        <option>Kordofon</option>
-                        <option>Iliofon</option>
-                        <option>Membranofon</option>
+                    <select name="category" id="category-select" class="bg-white border border-[#a08963] text-[#a08963] rounded-lg focus:ring-[#a08963] focus:border-[#a08963] block w-full p-2.5 transition-all duration-200">
+                        <option value="">Semua Kategori</option>
+                        <option value="Elektrofon" {{ (isset($category) && $category == 'Elektrofon') ? 'selected' : '' }}>Elektrofon</option>
+                        <option value="Aerofon" {{ (isset($category) && $category == 'Aerofon') ? 'selected' : '' }}>Aerofon</option>
+                        <option value="Kordofon" {{ (isset($category) && $category == 'Kordofon') ? 'selected' : '' }}>Kordofon</option>
+                        <option value="Idiofon" {{ (isset($category) && $category == 'Idiofon') ? 'selected' : '' }}>Idiofon</option>
+                        <option value="Membranofon" {{ (isset($category) && $category == 'Membranofon') ? 'selected' : '' }}>Membranofon</option>
                     </select>
                 </div>
-            </div>
+            </form>
 
             <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
                 @foreach($products as $product)
@@ -184,6 +184,79 @@
                     button.classList.remove('hidden');
                 });
         });
+    </script>
+    <script>
+        // Fungsi untuk memuat produk dengan filter
+        function loadProducts(resetOffset = true) {
+            const search = document.getElementById('search-input').value;
+            const category = document.getElementById('category-select').value;
+            const offset = resetOffset ? 0 : parseInt(document.getElementById('load-more-btn').dataset.offset);
+            
+            const spinner = document.getElementById('loading-spinner');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            
+            if (resetOffset) {
+                spinner.classList.remove('hidden');
+                if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+            } else {
+                if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+                spinner.classList.remove('hidden');
+            }
+            
+            // Buat URL dengan parameter pencarian dan kategori
+            let url = `/load-more?offset=${offset}`;
+            if (search) url += `&search=${encodeURIComponent(search)}`;
+            if (category) url += `&category=${encodeURIComponent(category)}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (resetOffset) {
+                        document.getElementById('products-container').innerHTML = data.html;
+                    } else {
+                        document.getElementById('products-container').insertAdjacentHTML('beforeend', data.html);
+                    }
+                    
+                    if (loadMoreBtn) {
+                        loadMoreBtn.dataset.offset = offset + 6;
+                        
+                        if(data.count < 6) {
+                            loadMoreBtn.style.display = 'none';
+                        } else {
+                            loadMoreBtn.style.display = 'inline-block';
+                        }
+                    }
+                    
+                    spinner.classList.add('hidden');
+                    if (loadMoreBtn) loadMoreBtn.classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    spinner.classList.add('hidden');
+                    if (loadMoreBtn) loadMoreBtn.classList.remove('hidden');
+                });
+        }
+        
+        // Event listener untuk pencarian otomatis
+        let searchTimeout;
+        document.getElementById('search-input').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadProducts(true);
+            }, 500); // Delay 500ms setelah user berhenti mengetik
+        });
+        
+        // Event listener untuk perubahan kategori
+        document.getElementById('category-select').addEventListener('change', function() {
+            loadProducts(true);
+        });
+        
+        // Event listener untuk tombol load more
+        if (document.getElementById('load-more-btn')) {
+            document.getElementById('load-more-btn').addEventListener('click', function() {
+                loadProducts(false);
+            });
+        }
     </script>
 
     <style>

@@ -160,8 +160,25 @@
                         </div>
                     @endif
 
+
                     <!-- Rental Form Section -->
-                    <div class="mt-6 space-y-4">
+<div class="mt-6 space-y-4">
+    <h3 class="text-lg font-semibold text-gray-900">Penyewaan</h3>
+    
+    <!-- Quantity Input -->
+    <div>
+        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
+        <input 
+            type="number" 
+            id="quantity" 
+            name="quantity"
+            min="1"
+            max="{{ $product['stock'] ?? 1 }}"
+            value="1"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required
+        >
+    </div>
                         <h3 class="text-lg font-semibold text-gray-900">Durasi Sewa</h3>
                         
                         <!-- Date Selection -->
@@ -233,18 +250,19 @@
                             @endphp
                             
                             @if($isAvailable)
-                                <form action="{{ route('penyewaan.form') }}" method="GET">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product['id'] ?? 0 }}">
-                                    <input type="hidden" name="start_date" id="hidden_start_date">
-                                    <input type="hidden" name="end_date" id="hidden_end_date">
-                                    <button type="submit" class="w-full text-white bg-[#a08963] hover:bg-[#8b7556] font-medium rounded-lg text-sm px-5 py-3 text-center flex items-center justify-center gap-2">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Sewa Sekarang
-                                    </button>
-                                </form>
+                              <form action="{{ route('penyewaan.form') }}" method="GET">
+    @csrf
+    <input type="hidden" name="product_id" value="{{ $product['id'] ?? 0 }}">
+    <input type="hidden" name="quantity" id="hidden_quantity" value="1">
+    <input type="hidden" name="start_date" id="hidden_start_date">
+    <input type="hidden" name="end_date" id="hidden_end_date">
+    <button type="submit" class="w-full text-white bg-[#a08963] hover:bg-[#8b7556] font-medium rounded-lg text-sm px-5 py-3 text-center flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
+        </svg>
+        Sewa Sekarang
+    </button>
+</form>
                             @else
                                 <button disabled class="w-full text-white bg-gray-400 font-medium rounded-lg text-sm px-5 py-3 text-center flex items-center justify-center gap-2 cursor-not-allowed">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -375,12 +393,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Rental date calculation elements
     const startDateInput = document.getElementById('start_date');
     const endDateInput = document.getElementById('end_date');
+    const quantityInput = document.getElementById('quantity');
     const durationDisplay = document.getElementById('duration-display');
     const totalPriceElement = document.getElementById('total-price');
     const hiddenStartDate = document.getElementById('hidden_start_date');
     const hiddenEndDate = document.getElementById('hidden_end_date');
     
-    // Clean price value by removing non-numeric characters
+    // Clean price value
     const pricePerDay = parseInt("{{ str_replace(['Rp', '.', ' '], '', $product['price'] ?? 0) }}") || 0;
     
     // Format currency as Rupiah
@@ -388,68 +407,55 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
     
-    // Calculate rental duration
-    function calculateDuration() {
+    // Calculate rental duration (24 jam = 1 hari)
+     function calculateDuration() {
         if (startDateInput.value && endDateInput.value) {
             const startDate = new Date(startDateInput.value);
             const endDate = new Date(endDateInput.value);
+            const quantity = parseInt(quantityInput.value) || 1;
             
-            // Validasi: end date harus setelah start date
-            if (endDate <= startDate) {
-                alert("Tanggal selesai harus setelah tanggal mulai");
-                endDateInput.value = "";
+            // Set to start of day
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(0, 0, 0, 0);
+            
+            // Validasi: end date tidak boleh sebelum start date
+            if (endDate < startDate) {
+                alert("Tanggal selesai tidak boleh sebelum tanggal mulai");
+                endDateInput.value = startDateInput.value;
                 return;
             }
             
-            // Calculate difference in days (inclusive)
+            // Calculate difference in days (24 jam = 1 hari)
             const diffTime = Math.abs(endDate - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
-            durationDisplay.textContent = diffDays + ' Hari';
-            totalPriceElement.textContent = formatRupiah(diffDays * pricePerDay);
+            // Jika tanggal mulai dan selesai sama, tetap dihitung 1 hari
+            const finalDays = diffDays === 0 ? 1 : diffDays;
+            
+            durationDisplay.textContent = finalDays + ' Hari';
+            totalPriceElement.textContent = formatRupiah(finalDays * pricePerDay * quantity);
             
             // Update hidden fields
             hiddenStartDate.value = startDateInput.value;
             hiddenEndDate.value = endDateInput.value;
+            document.getElementById('hidden_quantity').value = quantity;
         }
     }
     
-    // Initialize date inputs
-    function initializeDates() {
-        const today = new Date();
-        const todayStr = today.toISOString().split('T')[0];
-        
-        // Set minimum dates to today
-        startDateInput.min = todayStr;
-        endDateInput.min = todayStr;
-        
-        // Set default start date to today
-        startDateInput.value = todayStr;
-        
-        // Set default end date to tomorrow
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        endDateInput.value = tomorrow.toISOString().split('T')[0];
-        
+    // Tambahkan event listener untuk quantity
+    quantityInput.addEventListener('change', function() {
+        const maxStock = parseInt(this.max);
+        if (this.value > maxStock) {
+            this.value = maxStock;
+            alert(`Jumlah tidak boleh melebihi stok yang tersedia (${maxStock})`);
+        }
         calculateDuration();
-    }
-    
-    // Update end date minimum when start date changes
+    });
+
+    // Update end date min when start date changes
     startDateInput.addEventListener('change', function() {
-        if (this.value) {
-            const startDate = new Date(this.value);
-            const minEndDate = new Date(startDate);
-            minEndDate.setDate(startDate.getDate() + 1);
-            
-            endDateInput.min = minEndDate.toISOString().split('T')[0];
-            
-            // Reset end date if it's before the new min date
-            if (endDateInput.value && new Date(endDateInput.value) <= startDate) {
-                endDateInput.value = "";
-                durationDisplay.textContent = "Pilih tanggal";
-                totalPriceElement.textContent = "Rp 0";
-            }
-        }
+        endDateInput.min = this.value;
+        calculateDuration();
     });
     
     endDateInput.addEventListener('change', calculateDuration);
@@ -478,9 +484,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // Initialize the page
-    initializeDates();
 });
 </script>
 @endsection
