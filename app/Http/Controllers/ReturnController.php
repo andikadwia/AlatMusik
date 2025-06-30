@@ -37,39 +37,51 @@ class ReturnController extends Controller
         $request->validate([
             'id_pemesanan' => 'required|exists:pemesanan,id',
             'kondisi' => 'required|in:sangat_baik,baik,rusak,hilang',
-            'denda' => 'nullable|numeric|min:0',
-            'catatan' => 'nullable|string'
+            'denda' => 'required|numeric|min:0',
+            'catatan' => 'nullable|string|max:255'
         ]);
 
+        DB::beginTransaction();
+
         try {
-            DB::transaction(function () use ($request) {
-                // Create return record
-                $return = Pengembalian::create([
-                    'id_pemesanan' => $request->id_pemesanan,
-                    'tanggal_pengembalian' => now(), 
-                    'kondisi' => $request->kondisi,
-                    'catatan' => $request->catatan,
-                    'denda' => $request->denda,
-                    'dibuat_pada' => now()
-                ]);
+            // Update status pemesanan terlebih dahulu
+            $pemesanan = Pemesanan::findOrFail($request->id_pemesanan);
+            $pemesanan->status_penyewaan = 'sudah_dikembalikan';
+            $pemesanan->diperbarui_pada = now();
+            $pemesanan->save();
 
-                // Update rental status
-                $rental = Pemesanan::findOrFail($request->id_pemesanan);
-                $rental->update(['status_penyewaan' => 'sudah_dikembalikan']);
+            // Buat record pengembalian
+            $pengembalian = new Pengembalian([
+                'id_pemesanan' => $request->id_pemesanan,
+                'tanggal_pengembalian' => now(),
+                'kondisi' => $request->kondisi,
+                'catatan' => $request->catatan,
+                'denda' => $request->denda,
+                'dibuat_pada' => now()
+            ]);
+            $pengembalian->save();
 
-                // Restore stock if condition is good
-                if (in_array($request->kondisi, ['sangat_baik', 'baik'])) {
-                    foreach ($rental->items as $item) {
-                        $item->produk->increment('stok', $item->jumlah);
-                    }
+            // Kembalikan stok jika kondisi baik
+            if (in_array($request->kondisi, ['sangat_baik', 'baik'])) {
+                $items = ItemPemesanan::where('id_pemesanan', $request->id_pemesanan)->get();
+                foreach ($items as $item) {
+                    DB::table('produk')
+                        ->where('id', $item->id_produk)
+                        ->increment('stok', $item->jumlah);
                 }
-            });
+            }
 
-            return redirect()->route('dashboard.return.index')->with('success', 'Pengembalian berhasil dicatat!');
-        }  catch (\Exception $e) {
-        DB::rollBack();
-        return back()->withInput()
-               ->with('error', 'Gagal memproses pengembalian: ' . $e->getMessage());
+            DB::commit();
+
+            return redirect()
+                ->route('dashboard.return.index')
+                ->with('success', 'Pengembalian berhasil diproses! Status penyewaan telah diupdate.');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal memproses pengembalian: '.$e->getMessage());
         }
     }
 }

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
-
 class LoginController extends Controller
 {
     public function showLoginForm()
@@ -32,28 +31,19 @@ class LoginController extends Controller
         ])) {
             $request->session()->regenerate();
             
-            // Jika Anda tidak memerlukan OTP, hapus baris berikut
-            // $otpService->generateAndSendOTP($user->id, $user->telepon);
-            // return redirect()->route('otp.verify');
-            
-            // Langsung redirect ke beranda/halaman utama
-            //return redirect()->intended('/');
-            
-            // Atau jika ingin tetap menggunakan redirectBasedOnRole tapi ke halaman utama
-            return $this->redirectBasedOnRole(auth()->user());
+            // Redirect dengan pesan sukses
+            return $this->redirectBasedOnRole(auth()->user())
+                ->with('success', 'Login berhasil! Selamat datang ' . auth()->user()->name);
         }
 
-        return back()->withErrors([
-            'username' => 'Username/Email atau password salah.',
-        ])->onlyInput('username');
+        // Redirect dengan pesan error
+        return back()
+            ->with('error', 'Username/Email atau password salah')
+            ->onlyInput('username');
     }
 
     protected function redirectBasedOnRole(User $user)
     {
-        // Modifikasi untuk semua role mengarah ke beranda
-        //return redirect()->intended('/');
-        
-        // Atau jika Anda ingin admin tetap ke dashboard admin
         if ($user->role === 'admin') {
             return redirect('/dashboard');
         }
@@ -65,6 +55,9 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        
+        // Redirect dengan pesan sukses logout
+        return redirect('/')
+            ->with('success', 'Anda telah berhasil logout');
     }
 }
