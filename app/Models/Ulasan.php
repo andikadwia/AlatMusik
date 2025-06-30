@@ -22,12 +22,12 @@ class Ulasan extends Model
     const CREATED_AT = 'dibuat_pada';
     const UPDATED_AT = 'diedit_pada';
 
-    public function pengguna() {
-        return $this->belongsTo(Pengguna::class, 'id_pengguna');
+    public function user() {
+        return $this->belongsTo(User::class, 'id_pengguna');
     }
 
     public function produk() {
-        return $this->belongsTo(Produk::class, 'id_produk');
+        return $this->belongsTo(Product::class, 'id_produk');
     }
 
     public function pemesanan() {

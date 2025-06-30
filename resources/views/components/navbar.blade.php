@@ -1,7 +1,7 @@
   <div class="bg-gray-200 w-full shadow-sm sticky top-0 z-30">
     <div class="navbar px-4">
       <div class="flex-1 items-center">
-        <img src="https://c.animaapp.com/knqlfAnT/img/tak-berjudul1-20250312112214-1@2x.png" alt="Logo" class="h-20">
+        <img src="/logo-insphony.png" alt="Logo" class="h-20">
       </div>
       <div class="flex-none">
         <div class="form-control hidden sm:block">

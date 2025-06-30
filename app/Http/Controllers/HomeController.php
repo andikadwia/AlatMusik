@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Ulasan;
 
 class HomeController extends Controller
 {
@@ -67,31 +68,40 @@ class HomeController extends Controller
         ];
 
         // Data ulasan dummy
-        $reviews = [
-            [
-                'id' => 1,
-                'name' => 'Farrel',
-                'rating' => 5,
-                'content' => "KECEWA!\nKecewa dulu pernah pake vendor lain, haha...\ntau gitu dari dulu aja pake jasa Insphony\nok banget, sound ga perlu ditanya lah,\ndan yang paling penting buat saya sih,\nkomunikasi mereka sangat baik.",
-                'image' => 'https://scontent-sin6-1.xx.fbcdn.net/v/t39.30808-6/488837569_1381621146344471_888652050991545596_n.jpg'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Dika',
-                'rating' => 5,
-                'content' => "KECEWA!\nKecewa dulu pernah pake vendor lain, haha...\ntau gitu dari dulu aja pake jasa Insphony\nok banget, sound ga perlu ditanya lah,\ndan yang paling penting buat saya sih, komunikasi mereka sangat baik.",
-                'image' => 'https://c.animaapp.com/knqlfAnT/img/image-7@2x.png'
-            ],
-            [
-                'id' => 3,
-                'name' => 'Zidan',
-                'rating' => 5,
-                'content' => "Nyari bass?\nDi sini lengkap. Nyari jodoh? Nah, itu sih beda aplikasi ya 😜",
-                'image' => 'https://c.animaapp.com/knqlfAnT/img/screenshot-2025-01-06-185534@2x.png'
-            ]
-        ];
+      // Di controller
+$reviews = Ulasan::with(['user', 'produk'])
+    ->where('rating', 5)
+    ->orderBy('dibuat_pada', 'desc')
+    ->take(3)
+    ->get();
 
-        return view('pages.home', compact('products', 'requirements', 'reviews', 'search', 'category'));
+// Jika kurang dari 3, tambahkan ulasan rating tertinggi
+if ($reviews->count() < 3) {
+    $additionalReviews = Ulasan::with(['user', 'produk'])
+        ->where('rating', '>=', 4)
+        ->whereNotIn('id', $reviews->pluck('id'))
+        ->orderBy('rating', 'desc')
+        ->orderBy('dibuat_pada', 'desc')
+        ->take(3 - $reviews->count())
+        ->get();
+    
+    $reviews = $reviews->merge($additionalReviews);
+}
+
+$reviews = $reviews->map(function ($ulasan) {
+    return [
+        'id' => $ulasan->id,
+        'name' => $ulasan->user->name,
+        'rating' => $ulasan->rating,
+        'content' => $ulasan->komentar,
+        'image' => $ulasan->user->foto_profil ?? 'https://via.placeholder.com/150',
+        'product_image' => $ulasan->produk->path_gambar ?? 'https://via.placeholder.com/150',
+        'product_name' => $ulasan->produk->nama ?? 'Unknown Product',
+        'is_top_rated' => $ulasan->rating == 5 
+    ];
+});
+
+return view('pages.home', compact('products', 'requirements', 'reviews', 'search', 'category'));
     }
 
     public function loadMore(Request $request)
