@@ -6,17 +6,17 @@
 <div class="container mx-auto px-4 py-6">
   <div class="card bg-white shadow-sm rounded-lg mb-8">
     <div class="card-body p-6">
-      <div class="overflow-x-auto">
+      <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+          <thead class="bg-[#a08963]">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Pemesan</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telepon</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Harga</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Nama Pemesan</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Telepon</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Total Harga</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Tanggal</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Aksi</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -123,8 +123,12 @@
         </p>
       </div>
       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="font-semibold mb-2">Informasi Pembayaran</h4>
+        <h4 class="font-semibold mb-2">Informasi Lainnya</h4>
         <p><span class="text-gray-600">Total Harga:</span> Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
+        <p><span class="text-gray-600">Periode:</span>                        
+          {{ \Carbon\Carbon::parse($p->tanggal_mulai)->format('d M') }} - 
+          {{ \Carbon\Carbon::parse($p->tanggal_selesai)->format('d M Y') }}
+        </p>
       </div>
     </div>
     

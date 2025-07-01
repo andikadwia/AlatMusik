@@ -21,11 +21,10 @@ class ProfileController extends Controller
         
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'username' => 'required|string|max:255|unique:users,username,'.$user->id,
-            'telepon' => 'required|string|max:15|unique:users,telepon,'.$user->id,
+            'email' => 'required|string|email|max:255|unique:pengguna,email,'.$user->id,
+            'username' => 'required|string|max:255|unique:pengguna,username,'.$user->id,
+            'telepon' => 'required|string|max:15|unique:pengguna,telepon,'.$user->id,
             'alamat' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'Telepon.unique' => 'Nomor handphone sudah terdaftar',
             'username.unique' => 'Username sudah digunakan',
@@ -39,18 +38,6 @@ class ProfileController extends Controller
             'telepon' => $validated['telepon'],
             'alamat' => $validated['alamat'],
         ];
-
-        if ($request->hasFile('avatar')) {
-            // Delete old avatar if exists
-            if ($user->avatar) {
-                Storage::delete('public/avatars/'.$user->avatar);
-            }
-            
-            // Store new avatar
-            $avatarName = time().'.'.$request->avatar->extension();
-            $request->avatar->storeAs('public/avatars', $avatarName);
-            $updateData['avatar'] = $avatarName;
-        }
 
         $user->update($updateData);
 
