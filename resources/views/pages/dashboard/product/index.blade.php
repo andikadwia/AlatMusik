@@ -14,19 +14,19 @@
     @include('pages.dashboard.product.create')
 
     <!-- Tabel Produk -->
-    <div class="overflow-x-auto">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="table w-full" id="products-table">
-            <thead>
+            <thead class="bg-[#a08963]">
                 <tr>
-                    <th scope="col" class="w-12 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                    <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
-                    <th scope="col" class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                    <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
-                    <th scope="col" class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                    <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                    <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    <th scope="col" class="w-12 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">No</th>
+                    <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Gambar</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Nama Produk</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Deskripsi</th>
+                    <th scope="col" class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Harga</th>
+                    <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Stok</th>
+                    <th scope="col" class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Kategori</th>
+                    <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Rating</th>
+                    <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,7 +41,7 @@
                                 @endphp
                                 <div class="relative group">
                                     <img src="{{ asset($firstImage) }}" 
-                                         class="w-28 h-14 object-cover rounded"
+                                         class="w-28 h-28 object-cover rounded"
                                          alt="Thumbnail Produk">
                                     <div class="hidden group-hover:block absolute z-10 bottom-full left-0 bg-white p-2 shadow-lg rounded-lg w-64">
                                         <div class="grid grid-cols-2 gap-2">

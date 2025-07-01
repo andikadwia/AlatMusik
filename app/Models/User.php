@@ -37,19 +37,21 @@ class User extends Authenticatable
         'role' => 'string',
     ];
 
-    // Relasi dengan pemesanan
+    public function pengguna()
+    {
+        return $this->belongsTo(User::class, 'id_pengguna');
+    }
+
     public function pemesanan()
     {
         return $this->hasMany(Pemesanan::class, 'id_pengguna');
     }
 
-    // Method untuk mengecek role admin
     public function isAdmin()
     {
         return $this->role === self::ROLE_ADMIN;
     }
 
-    // Method untuk mengecek role user biasa
     public function isUser()
     {
         return $this->role === self::ROLE_USER;
