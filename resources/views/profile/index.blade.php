@@ -25,13 +25,13 @@
                                     class="w-24 h-24 rounded-full object-cover border-2 border-primary"
                                     id="profile-image-preview">
                             </div>
-                            @else
-                            <div class="relative">
-                                <img src="{{ asset('images/gitar.jpg') }}" 
-                                    alt="Foto Profil Default" 
-                                    class="w-24 h-24 rounded-full object-cover border-2 border-primary">
+                        @else
+                            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white overflow-hidden border-2 border-primary">
+                                <span class="text-3xl font-medium">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </span>
                             </div>
-                            @endif
+                        @endif
                             
                             <label for="foto_profil-upload" class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary-dark transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
