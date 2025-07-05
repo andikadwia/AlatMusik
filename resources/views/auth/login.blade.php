@@ -15,8 +15,16 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
     .animate-fade-in {
       animation: fadeIn 0.6s ease-out forwards;
+    }
+    .animate-shake {
+      animation: shake 0.5s ease-in-out;
     }
     .bg-gradient-overlay {
       background: linear-gradient(135deg, rgba(160, 137, 99, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%);
@@ -67,7 +75,7 @@
             </button>
         </div>
     @endif
-</div>
+
     @if($errors->any())
       <div class="alert-error p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg animate-fade-in flex items-center" role="alert">
         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -154,11 +162,16 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <input id="remember" name="remember" type="checkbox" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary">
-            <label for="remember" class="ml-2 text-sm font-medium text-gray-700 hover:text-gray-900 cursor-pointer transition-colors duration-200">Ingat saya</label>
+            <label for="remember" class="ml-2 text-sm font-medium text-gray-700 hover:text-gray-900 cursor-pointer transition-colors duration-200">Verifikasi</label>
           </div>
           <a href="{{ route('password.request') }}" class="text-sm font-medium text-primary hover:text-amber-800 hover:underline transition-all duration-300">
             Lupa Kata Sandi?
           </a>
+        </div>
+
+        <!-- Verification Error Message -->
+        <div id="verification-error" class="hidden text-sm text-red-600 animate-pulse">
+          Harap centang kotak verifikasi untuk melanjutkan
         </div>
 
         <!-- Login Button with Hover Effect -->
@@ -186,7 +199,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2023 InsPhony. All rights reserved.</p>
+      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -234,6 +247,37 @@
       loginSection.style.opacity = '1';
     });
 
+    // Form validation before submit
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const remember = document.getElementById('remember').checked;
+      const verificationError = document.getElementById('verification-error');
+      
+      // Reset error message
+      verificationError.classList.add('hidden');
+      
+      if (!username || !password) {
+        e.preventDefault();
+        showAlert('Harap isi semua field!', 'error');
+        return;
+      }
+      
+      if (!remember) {
+        e.preventDefault();
+        verificationError.classList.remove('hidden');
+        // Scroll to error message
+        verificationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Shake animation for checkbox
+        const checkbox = document.getElementById('remember');
+        checkbox.classList.add('animate-shake');
+        setTimeout(() => {
+          checkbox.classList.remove('animate-shake');
+        }, 500);
+        return;
+      }
+    });
+
     // Function to show custom alert
     function showAlert(message, type = 'success') {
       const alertContainer = document.getElementById('alert-container');
@@ -273,33 +317,14 @@
       }, 5000);
     }
 
-    // Form validation before submit
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-      
-      if (!username || !password) {
-        e.preventDefault();
-        showAlert('Harap isi semua field!', 'error');
-      }
-    });
-
     // Auto close alerts after 5 seconds
-    document.querySelectorAll('.alert-success, .alert-error').forEach(alert => {
+    document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => {
-        alert.remove();
+        document.querySelectorAll('[class*="alert-"]').forEach(alert => {
+          alert.remove();
+        });
       }, 5000);
     });
   </script>
-  <script>
-    // Auto close alerts setelah 5 detik
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(() => {
-            document.querySelectorAll('[class*="alert-"]').forEach(alert => {
-                alert.remove();
-            });
-        }, 5000);
-    });
-</script>
 </body>
 </html>

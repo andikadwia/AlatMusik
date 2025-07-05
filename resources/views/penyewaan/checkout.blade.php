@@ -150,10 +150,9 @@
                         </svg>
                         <div class="flex text-sm text-gray-600">
                             <label for="foto_jaminan" class="relative cursor-pointer rounded-md bg-white font-medium text-[#a08963] hover:text-[#8a7554] focus-within:outline-none focus-within:ring-2 focus-within:ring-[#a08963] focus-within:ring-offset-2">
-                                <span>Upload a file</span>
+                                <span>Unggah Berkas</span>
                                 <input id="foto_jaminan" name="foto_jaminan" type="file" class="sr-only" accept="image/*" required>
                             </label>
-                            <p class="pl-1">or drag and drop</p>
                         </div>
                         <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
                     </div>
@@ -175,15 +174,15 @@
                         <tbody class="divide-y divide-gray-200 bg-white">
                             <tr>
                                 <td class="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Bank</td>
-                                <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">BCA</td>
+                                <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">BNI</td>
                             </tr>
                             <tr>
                                 <td class="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Nomor Rekening</td>
-                                <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">8801-2228-6721</td>
+                                <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">1907859284</td>
                             </tr>
                             <tr>
                                 <td class="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Nama Rekening</td>
-                                <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">Farel Rental</td>
+                                <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">Deny Riansyah</td>
                             </tr>
                             <tr>
                                 <td class="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Jumlah Transfer</td>
@@ -203,10 +202,9 @@
                         </svg>
                         <div class="flex text-sm text-gray-600">
                             <label for="bukti_pembayaran" class="relative cursor-pointer rounded-md bg-white font-medium text-[#a08963] hover:text-[#8a7554] focus-within:outline-none focus-within:ring-2 focus-within:ring-[#a08963] focus-within:ring-offset-2">
-                                <span>Upload a file</span>
+                                <span>Unggah berkas</span>
                                 <input id="bukti_pembayaran" name="bukti_pembayaran" type="file" class="sr-only" accept="image/*" required>
                             </label>
-                            <p class="pl-1">or drag and drop</p>
                         </div>
                         <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
                     </div>
@@ -218,16 +216,28 @@
         </div>
         
         <!-- Action Buttons -->
-        <div class="flex justify-end gap-3 pt-4">
-            <button type="button" onclick="window.history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#a08963] focus:ring-offset-2">
-                Kembali
-            </button>
-            <button type="submit" class="inline-flex items-center rounded-md border border-transparent bg-[#a08963] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#8a7554] focus:outline-none focus:ring-2 focus:ring-[#a08963] focus:ring-offset-2">
-                Konfirmasi Pembayaran
-            </button>
-        </div>
-    </form>
-    @endif
+<div class="flex justify-end gap-3 pt-4">
+    <button type="button" onclick="window.history.back()" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#a08963] focus:ring-offset-2">
+        Kembali
+    </button>
+    <button type="submit" class="inline-flex items-center rounded-md border border-transparent bg-[#a08963] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#8a7554] focus:outline-none focus:ring-2 focus:ring-[#a08963] focus:ring-offset-2">
+        Konfirmasi Pembayaran
+    </button>
+</div>
+
+<p class="text-xs text-gray-500 mt-4">
+    <strong>Syarat dan Ketentuan:</strong><br>
+    1. Pembayaran harus dilakukan sesuai dengan nominal yang tertera<br>
+    2. Penyewaan dianggap sah setelah pembayaran dikonfirmasi oleh admin<br>
+    3. Barang harus diambil sesuai dengan tanggal yang telah disepakati<br>
+    4. <strong>Berkas jaminan harus diserahkan saat pengambilan barang</strong> berupa:<br>
+       &nbsp;&nbsp;- Fotokopi KTP/Kartu Pelajar<br>
+       &nbsp;&nbsp;- Surat pernyataan bertanggung jawab (akan disediakan di tempat)<br>
+    5. Penyewa bertanggung jawab penuh atas kerusakan atau kehilangan barang<br>
+    6. Denda keterlambatan pengembalian barang sebesar Rp50.0000 per hari
+</p>
+</form>
+@endif
 </div>
 @endsection
 

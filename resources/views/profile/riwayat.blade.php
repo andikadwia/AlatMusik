@@ -178,10 +178,13 @@
                                     </button>
                                 @endif
                                 <!-- Tombol Beri Ulasan -->
-                                <button onclick="document.getElementById('ulasan-form-{{ $pemesanan->id }}').classList.toggle('hidden')"
-                                        class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
-                                    Beri Ulasan
-                                </button>
+                                @if($pemesanan->status_penyewaan === 'sudah_dikembalikan')
+                                    <!-- Tombol Beri Ulasan -->
+                                    <button onclick="document.getElementById('ulasan-form-{{ $pemesanan->id }}').classList.toggle('hidden')"
+                                            class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                                        Beri Ulasan
+                                    </button>
+                                @endif
                             </div>
                             
                             <!-- Form Ulasan -->

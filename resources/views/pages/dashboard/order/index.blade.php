@@ -150,18 +150,22 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             @foreach ($p->detail as $item)
-            <tr>
-              <td class="px-6 py-4">
-                @if ($item->path_gambar)
-                  <img src="{{ asset($item->path_gambar) }}" class="w-16 h-16 object-contain">
-                @else
-                  <div class="w-16 h-16 bg-gray-200 flex items-center justify-center">
+    <tr>
+        <td class="px-6 py-4">
+            @if ($item->path_gambar)
+                @php
+                    // Pecah string path_gambar berdasarkan tanda |
+                    $gambarPertama = explode('|', $item->path_gambar)[0];
+                @endphp
+                <img src="{{ asset($gambarPertama) }}" class="w-16 h-16 object-contain">
+            @else
+                <div class="w-16 h-16 bg-gray-200 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                  </div>
-                @endif
-              </td>
+                </div>
+            @endif
+        </td>
               <td class="px-6 py-4">{{ $item->nama_produk }}</td>
               <td class="px-6 py-4">{{ $item->hari_sewa }} Hari</td>
               <td class="px-6 py-4">{{ $item->jumlah }}</td>

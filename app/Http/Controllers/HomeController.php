@@ -43,26 +43,26 @@ class HomeController extends Controller
         $requirements = [
             [
                 'id' => 1,
-                'title' => 'Identitas',
-                'description' => "KTP/SIM/PASPOR\nKartu Pelajar/Mahasiswa\nUsia Minimal 18 tahun",
+                'title' => 'Persyaratan Reservasi',
+                'description' => "● Usia minimal Penyewa: 18 tahun.\n● Wajib isi data lengkap:\n- Nama lengkap\n- Alamat\n- No. HP/WA\n- Email\n- Tanggal & durasi sewa\n- Alat musik disewa",
                 'icon' => 'https://c.animaapp.com/knqlfAnT/img/vector-2@2x.png'
             ],
             [
                 'id' => 2,
-                'title' => 'Deposit',
-                'description' => "Dikembalikan setelah pengembalian\nPembayaran via cash",
+                'title' => 'Pembayaran & Jaminan',
+                'description' => "● Pembayaran lunas saat pemesanan\n● unggah dokumen:\n- Bukti transfer\n- Foto jaminan (KTP/STNK/BPKB)\n● Serahkan jaminan asli saat pengambilan",
                 'icon' => 'https://c.animaapp.com/knqlfAnT/img/vector-1@2x.png'
             ],
             [
                 'id' => 3,
-                'title' => 'Dokumen',
-                'description' => "Surat perjanjian sewa\nBukti pembayaran\nForm pemeriksaan alat",
+                'title' => 'Kebijakan',
+                'description' => "● Invoice keluar setelah verifikasi\n● Pengambilan:\n- Tunjukkan invoice\n- Serahkan jaminan asli\n- Pengecekan alat\n● Pengembalian tepat waktu & kondisi normal",
                 'icon' => 'https://c.animaapp.com/knqlfAnT/img/vector-4@2x.png'
             ],
             [
                 'id' => 4,
-                'title' => 'Jaminan',
-                'description' => "STNK/BPKB Kendaraan\nKTP\nAtau deposit tunai",
+                'title' => 'Denda & Sangsi',
+                'description' => "● Telat: Denda Rp50.000/hari\n● Kerusakan: Biaya ditanggung penyewa\n● Kehilangan: Ganti rugi harga pasar\n● Dokumen palsu: Pemesanan batal + denda\n● Pembatalan:\n- Sebelum verifikasi: Refund 100%\n- Setelah verifikasi: Potong admin\n- H-1 pengambilan: Tidak ada refund",
                 'icon' => 'https://c.animaapp.com/knqlfAnT/img/vector-6@2x.png'
             ]
         ];

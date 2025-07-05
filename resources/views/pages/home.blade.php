@@ -160,7 +160,8 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-aos="fade-up" data-aos-delay="300">Prosedur & Persyaratan Sewa</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="300">Kami menawarkan pengalaman penyewaan alat musik yang mudah dan terpercaya</p>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="300">Dengan menggunakan layanan Insphony, Anda setuju untuk mematuhi seluruh ketentuan berikut:
+</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($requirements as $index => $requirement)
@@ -195,9 +196,6 @@
                 </svg>
                 <h3 class="mt-4 text-lg font-medium text-gray-900">Belum ada ulasan</h3>
                 <p class="mt-1 text-gray-500">Jadilah yang pertama memberikan ulasan</p>
-                <button class="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors">
-                    Beri Ulasan
-                </button>
             </div>
         @endif
     </div>

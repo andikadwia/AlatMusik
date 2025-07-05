@@ -150,7 +150,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2023 InsPhony. All rights reserved.</p>
+      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 

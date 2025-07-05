@@ -92,9 +92,33 @@ class PenyewaanController extends Controller
             $duration = $this->calculateDuration($startDate, $endDate);
             $totalPrice = $this->calculateTotalPrice($product->harga, $duration, $request->quantity);
 
-            // Simpan file bukti pembayaran dan jaminan
-            $buktiPath = $request->file('bukti_pembayaran')->store('pembayaran', 'public');
-            $jaminanPath = $request->file('foto_jaminan')->store('jaminan', 'public');
+                        // Pastikan folder pembayaran dan jaminan ada
+            if (!file_exists(public_path('pembayaran'))) {
+                mkdir(public_path('pembayaran'), 0755, true);
+            }
+            if (!file_exists(public_path('jaminan'))) {
+                mkdir(public_path('jaminan'), 0755, true);
+            }
+
+            // Simpan bukti pembayaran
+            $buktiPembayaran = $request->file('bukti_pembayaran');
+            $buktiName = time().'_'.$buktiPembayaran->getClientOriginalName();
+            $buktiPembayaran->move(public_path('pembayaran'), $buktiName);
+            $buktiPath = 'pembayaran/'.$buktiName;
+
+                        // Simpan foto jaminan
+            $fotoJaminan = $request->file('foto_jaminan');
+            $jaminanName = time().'_'.$fotoJaminan->getClientOriginalName();
+            $fotoJaminan->move(public_path('jaminan'), $jaminanName);
+            $jaminanPath = 'jaminan/'.$jaminanName;
+
+            // Verifikasi penyimpanan file
+            if (!file_exists(public_path($buktiPath))) {
+                throw new \Exception("Gagal menyimpan bukti pembayaran");
+            }
+            if (!file_exists(public_path($jaminanPath))) {
+                throw new \Exception("Gagal menyimpan foto jaminan");
+            }
 
             // Buat pemesanan
             $pemesanan = Pemesanan::create([

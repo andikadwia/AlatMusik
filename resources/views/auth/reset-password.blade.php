@@ -164,7 +164,7 @@
           <div id="password-strength" class="password-strength w-full rounded-full overflow-hidden bg-gray-200 mt-1">
             <div class="h-full w-0 bg-red-500 transition-all duration-300"></div>
           </div>
-          <p id="password-hint" class="mt-1 text-xs text-gray-500 hidden">Password harus 8-20 karakter, tanpa spasi atau karakter khusus</p>
+          <p id="password-hint" class="mt-1 text-xs text-gray-500 hidden">Kata Sandi harus 8-20 karakter, tanpa spasi atau karakter khusus</p>
         </div>
         
         <!-- Confirm Password Field -->
@@ -215,7 +215,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2023 InsPhony. All rights reserved.</p>
+      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -333,19 +333,19 @@
       // Validasi client-side
       if (password !== confirmPassword) {
         e.preventDefault();
-        showAlert('Password dan konfirmasi password tidak cocok!', 'error');
+        showAlert('Kata Sandi dan konfirmasi Kata Sandi tidak cocok!', 'error');
         return;
       }
 
       if (password.length < 8) {
         e.preventDefault();
-        showAlert('Password minimal harus 8 karakter!', 'error');
+        showAlert('Kata Sandi minimal harus 8 karakter!', 'error');
         return;
       }
 
       if (/\s/.test(password)) {
         e.preventDefault();
-        showAlert('Password tidak boleh mengandung spasi!', 'error');
+        showAlert('Kata Sandi tidak boleh mengandung spasi!', 'error');
         return;
       }
 

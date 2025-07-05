@@ -32,7 +32,7 @@
     <!-- Demo content to show footer positioning -->
     <div class="flex-1 p-8">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">Insphony Website</h1>
-        <p class="text-center text-gray-600">Demo content to showcase the enhanced footer with earth tones below</p>
+        <p class="text-center text-gray-600">Nikmati layanan sewa alat musik yang praktis, aman, dan terpercaya bersama Insphony.</p>
     </div>
 
     <!-- Simplified but still luxurious footer -->
