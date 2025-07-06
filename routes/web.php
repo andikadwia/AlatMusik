@@ -156,5 +156,7 @@ Route::post('/dashboard/peminjaman/{id}/update-status', [PeminjamanController::c
     ->name('dashboard.peminjaman.update-status');
 
 Route::post('/ulasan', [UlasanController::class, 'store'])->middleware('auth')->name('ulasan.store');
+Route::put('/ulasan/{ulasan}', [UlasanController::class, 'update'])->name('ulasan.update');
+Route::delete('/ulasan/{ulasan}', [UlasanController::class, 'destroy'])->name('ulasan.destroy');
 
 

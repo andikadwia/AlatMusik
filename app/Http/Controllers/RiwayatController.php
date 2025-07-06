@@ -12,7 +12,7 @@ class RiwayatController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $pemesanans = Pemesanan::with(['items.produk'])
+        $pemesanans = Pemesanan::with(['items.produk', 'verifikasiPembayaran', 'pengembalian'])
             ->where('id_pengguna', $user->id)
             ->orderBy('tanggal_pemesanan', 'desc')
             ->get();

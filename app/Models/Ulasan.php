@@ -17,6 +17,7 @@ class Ulasan extends Model
         'id_produk',
         'rating',
         'komentar',
+        'bisa_edit',
     ];
 
     const CREATED_AT = 'dibuat_pada';

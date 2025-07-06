@@ -83,6 +83,7 @@
                             $produk = $item->produk ?? null;
                             $gambar = $produk->path_gambar ? explode('|', $produk->path_gambar)[0] : 'images/gitar.jpg';
                             $jumlah = $item->jumlah ?? 1;
+                            $ulasan = $pemesanan->ulasan->firstWhere('id_pengguna', auth()->id());
                             
                             // Status dan class
                             if ($pemesanan->status_penyewaan == 'belum_dipinjam') {
@@ -92,7 +93,7 @@
                                 $status = 'Sedang Dipinjam';
                                 $statusClass = 'bg-yellow-100 text-yellow-800';
                             } elseif ($pemesanan->status_penyewaan == 'sudah_dikembalikan') {
-                                $status = 'Selesai';
+                                $status = 'Sudah dikembalikan';
                                 $statusClass = 'bg-green-100 text-green-800';
                             } else {
                                 $status = 'Menunggu Pembayaran';
@@ -117,7 +118,7 @@
                             data-tanggal-mulai="{{ $pemesanan->tanggal_mulai ? \Carbon\Carbon::parse($pemesanan->tanggal_mulai)->format('d M Y') : '-' }}"
                             data-tanggal-selesai="{{ $pemesanan->tanggal_selesai ? \Carbon\Carbon::parse($pemesanan->tanggal_selesai)->format('d M Y') : '-' }}"
                             data-durasi="{{ $duration }}"
-                            data-metode-pembayaran="{{ $pemesanan->verifikasiPembayaran ? 'Transfer Bank' : 'Pembayaran Langsung' }}"
+                            data-metode-pembayaran="{{ $pemesanan->verifikasiPembayaran ? ($pemesanan->verifikasiPembayaran->status_verifikasi === 'diterima' ? 'Transfer Bank' : ($pemesanan->verifikasiPembayaran->status_verifikasi === 'menunggu' ? 'Menunggu Verifikasi' : ($pemesanan->verifikasiPembayaran->status_verifikasi === 'ditolak' ? 'Pembayaran Ditolak' : 'Pembayaran Langsung'))) : 'Pembayaran Langsung' }}"
                             data-total-harga="{{ $pemesanan->total_harga }}"
                             data-status="{{ $status }}"
                             data-status-class="{{ $statusClass }}"
@@ -151,7 +152,23 @@
                                 <div class="text-right">
                                     <p class="font-bold text-gray-800">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</p>
                                     <p class="text-sm text-gray-600 mt-1">
-                                        {{ $pemesanan->verifikasiPembayaran ? 'Transfer Bank' : 'Pembayaran Langsung' }}
+                                        @if($pemesanan->verifikasiPembayaran)
+                                            @switch($pemesanan->verifikasiPembayaran->status_verifikasi)
+                                                @case('diterima')
+                                                    Transfer Bank (Diterima)
+                                                    @break
+                                                @case('menunggu')
+                                                    Transfer Bank (Menunggu Verifikasi)
+                                                    @break
+                                                @case('ditolak')
+                                                    Transfer Bank (Ditolak)
+                                                    @break
+                                                @default
+                                                    Pembayaran Langsung
+                                            @endswitch
+                                        @else
+                                            Pembayaran Langsung
+                                        @endif
                                     </p>
                                     <p class="text-xs text-gray-500 mt-1">
                                         {{ $pemesanan->tanggal_pemesanan ? \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('d M Y H:i') : '-' }}
@@ -161,14 +178,16 @@
                             
                             <!-- Tombol Aksi -->
                             <div class="flex justify-end space-x-2 mt-4">
-                                <button onclick="showDetailModal(this.closest('[data-pemesanan-id]'))" 
-                                        class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                                <button onclick="showDetailModal('{{ $pemesanan->id }}')" 
+                                    class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
                                     Detail
                                 </button>
-                                <a href="{{ route('pemesanan.invoice', $pemesanan->id) }}" 
-                                   class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
-                                    Unduh Invoice
-                                </a>
+                                @if($pemesanan->verifikasiPembayaran->status_verifikasi === 'diterima')
+                                    <a href="{{ route('pemesanan.invoice', $pemesanan->id) }}" 
+                                    class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                                        Unduh Invoice
+                                    </a>
+                                @endif
                                 @if($status == 'Menunggu Pembayaran')
                                     <button class="px-3 py-1 bg-primary text-white text-sm rounded-lg hover:bg-primary-dark transition-colors">
                                         Bayar Sekarang
@@ -177,64 +196,149 @@
                                         Batalkan
                                     </button>
                                 @endif
-                                <!-- Tombol Beri Ulasan -->
+                                <!-- Tombol Ulasan -->
                                 @if($pemesanan->status_penyewaan === 'sudah_dikembalikan')
-                                    <!-- Tombol Beri Ulasan -->
-                                    <button onclick="document.getElementById('ulasan-form-{{ $pemesanan->id }}').classList.toggle('hidden')"
+                                    <button onclick="toggleUlasanSection('{{ $pemesanan->id }}')"
                                             class="px-3 py-1 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
-                                        Beri Ulasan
+                                        {{ $ulasan ? 'Lihat Ulasan' : 'Beri Ulasan' }}
                                     </button>
                                 @endif
                             </div>
                             
-                            <!-- Form Ulasan -->
-                            <div id="ulasan-form-{{ $pemesanan->id }}" class="mt-4 border p-6 rounded-lg bg-white shadow-sm hidden">
+                            <!-- Section Ulasan -->
+                            <div id="ulasan-section-{{ $pemesanan->id }}" class="mt-4 border p-6 rounded-lg bg-white shadow-sm hidden">
                                 <h3 class="text-center text-lg font-bold mb-4">Ulasan</h3>
                                 
-                                <form action="{{ route('ulasan.store') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
-                                    <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
+                                @if($ulasan)
+                                    <!-- Tampilan Ulasan yang sudah ada (diubah agar mirip dengan form) -->
+                                    <div class="mb-6" id="existing-review-{{ $pemesanan->id }}">
+                                        <!-- Rating -->
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                        <div class="flex justify-center mb-4">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                                    class="w-8 h-8 {{ $i <= $ulasan->rating ? 'text-yellow-400 fill-current' : 'text-yellow-400' }}" 
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                                                </svg>
+                                            @endfor
+                                        </div>
 
-                                    <!-- Rating -->
-                                    <label for="rating-{{ $pemesanan->id }}" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                                    <div class="flex justify-center mb-4" id="rating-stars-{{ $pemesanan->id }}">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
-                                                 class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform text-yellow-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
-                                                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
-                                            </svg>
-                                        @endfor
+                                        <!-- Komentar -->
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
+                                        <div class="w-full border border-gray-300 p-3 rounded-lg mb-4 bg-gray-50 min-h-[120px]">
+                                            <p class="text-gray-700">{{ $ulasan->komentar }}</p>
+                                        </div>
+
+                                        <p class="text-sm text-gray-500 mb-4">
+                                            Ditulis pada: {{ $ulasan->dibuat_pada->format('d M Y H:i') }}
+                                            @if($ulasan->dibuat_pada != $ulasan->diedit_pada)
+                                                (Terakhir diupdate: {{ $ulasan->diedit_pada->format('d M Y H:i') }})
+                                            @endif
+                                        </p>
+
+                                        <div class="flex justify-end space-x-2">
+                                            @if($ulasan->bisa_edit == 1)
+                                                <!-- Tampilkan tombol edit jika bisa_diedit = 1 -->
+                                                <button onclick="showEditForm('{{ $pemesanan->id }}')" 
+                                                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                                    Edit
+                                                </button>
+                                            @endif
+                                            
+                                            <!-- Tombol hapus selalu tampil -->
+                                            <form action="{{ route('ulasan.destroy', $ulasan->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                                                        onclick="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?')">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <input type="hidden" name="rating" id="rating-input-{{ $pemesanan->id }}" required>
+                                    
+                                    <!-- Form Edit Ulasan -->
+                                    <div id="edit-ulasan-form-{{ $pemesanan->id }}" class="hidden">
+                                        <form action="{{ route('ulasan.update', $ulasan->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
+                                            <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
+                                            <input type="hidden" name="bisa_edit" value="0">
 
-                                    <!-- Komentar -->
-                                    <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
-                                    <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
-                                              class="w-full border border-gray-300 p-3 rounded-lg mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400" required></textarea>
+                                            <!-- Rating -->
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                            <div class="flex justify-center mb-4" id="edit-rating-stars-{{ $pemesanan->id }}">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" 
+                                                        class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform 
+                                                        {{ $i <= $ulasan->rating ? 'text-yellow-400 fill-current' : 'text-yellow-400' }}" 
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                                                    </svg>
+                                                @endfor
+                                            </div>
+                                            <input type="hidden" name="rating" id="edit-rating-input-{{ $pemesanan->id }}" value="{{ $ulasan->rating }}" required>
 
-                                    <button type="submit" 
-                                            class="w-full bg-[#a47a4e] hover:bg-[#8b623a] text-white py-2 rounded-lg font-semibold transition-colors">
-                                        Kirim
-                                    </button>
-                                </form>
+                                            <!-- Komentar -->
+                                            <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
+                                            <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
+                                                    class="w-full border border-gray-300 p-3 rounded-lg mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400" required>{{ $ulasan->komentar }}</textarea>
+
+                                            <div class="flex justify-end space-x-2">
+                                                <button type="button" onclick="hideEditForm('{{ $pemesanan->id }}')"
+                                                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                                    Batal
+                                                </button>
+                                                <button type="submit" 
+                                                        class="px-4 py-2 bg-[#a47a4e] hover:bg-[#8b623a] text-white rounded-lg font-semibold transition-colors">
+                                                    Simpan Perubahan
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @else
+                                    <!-- Form Ulasan Baru -->
+                                    <form action="{{ route('ulasan.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
+                                        <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
+
+                                        <!-- Rating -->
+                                        <label for="rating-{{ $pemesanan->id }}" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                        <div class="flex justify-center mb-4" id="rating-stars-{{ $pemesanan->id }}">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
+                                                    class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform text-yellow-400">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                                                </svg>
+                                            @endfor
+                                        </div>
+                                        <input type="hidden" name="rating" id="rating-input-{{ $pemesanan->id }}" required>
+
+                                        <!-- Komentar -->
+                                        <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
+                                        <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
+                                                class="w-full border border-gray-300 p-3 rounded-lg mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400" required></textarea>
+
+                                        <div class="flex justify-end space-x-2">
+                                            <button type="button" onclick="toggleUlasanSection('{{ $pemesanan->id }}')"
+                                                    class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                                Batal
+                                            </button>
+                                            <button type="submit" 
+                                                    class="px-4 py-2 bg-[#a47a4e] hover:bg-[#8b623a] text-white rounded-lg font-semibold transition-colors">
+                                                Kirim Ulasan
+                                            </button>
+                                        </div>
+                                    </form>
+                                @endif
                             </div>
-                            
-                            <script>
-                                // Bintang interaktif per pemesanan
-                                document.querySelectorAll('#rating-stars-{{ $pemesanan->id }} .star').forEach(star => {
-                                    star.addEventListener('click', function () {
-                                        const selectedValue = this.getAttribute('data-value');
-                                        document.getElementById('rating-input-{{ $pemesanan->id }}').value = selectedValue;
-
-                                        const stars = document.querySelectorAll('#rating-stars-{{ $pemesanan->id }} .star');
-                                        stars.forEach((s, index) => {
-                                            s.setAttribute('fill', index < selectedValue ? 'currentColor' : 'none');
-                                        });
-                                    });
-                                });
-                            </script>
                         </div>
                         @empty
                         <div class="text-center py-8">
@@ -264,111 +368,196 @@
 <div id="detailModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <!-- Modal content akan diisi oleh JavaScript -->
+            @foreach($pemesanans as $pemesanan)
+            @php
+                $item = $pemesanan->items->first();
+                $produk = $item->produk ?? null;
+                
+                // Status dan class
+                if ($pemesanan->status_penyewaan == 'belum_dipinjam') {
+                    $status = 'Menunggu Pengambilan';
+                    $statusClass = 'bg-blue-100 text-blue-800';
+                } elseif ($pemesanan->status_penyewaan == 'sedang_dipinjam') {
+                    $status = 'Sedang Dipinjam';
+                    $statusClass = 'bg-yellow-100 text-yellow-800';
+                } elseif ($pemesanan->status_penyewaan == 'sudah_dikembalikan') {
+                    $status = 'Sudah dikembalikan';
+                    $statusClass = 'bg-green-100 text-green-800';
+                } else {
+                    $status = 'Menunggu Pembayaran';
+                    $statusClass = 'bg-gray-100 text-gray-800';
+                }
+                
+                // Metode Pembayaran
+                if ($pemesanan->verifikasiPembayaran) {
+                    switch($pemesanan->verifikasiPembayaran->status_verifikasi) {
+                        case 'diterima':
+                            $metodePembayaran = 'Transfer Bank (Diterima)';
+                            break;
+                        case 'menunggu':
+                            $metodePembayaran = 'Transfer Bank (Menunggu Verifikasi)';
+                            break;
+                        case 'ditolak':
+                            $metodePembayaran = 'Transfer Bank (Ditolak)';
+                            break;
+                        default:
+                            $metodePembayaran = 'Pembayaran Langsung';
+                    }
+                } else {
+                    $metodePembayaran = 'Pembayaran Langsung';
+                }
+            @endphp
+            <div id="modal-content-{{ $pemesanan->id }}" class="hidden">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center border-b p-4">
+                    <h3 class="text-lg font-bold">Detail Pemesanan #{{ $pemesanan->id }}</h3>
+                    <button onclick="hideDetailModal()" class="text-gray-500 hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Info Produk -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-2">Produk</h4>
+                            <div class="flex items-start space-x-4">
+                                <img src="{{ asset($produk->path_gambar ? explode('|', $produk->path_gambar)[0] : 'images/gitar.jpg') }}" 
+                                     alt="{{ $produk->nama ?? 'Alat Musik' }}" 
+                                     class="w-16 h-16 object-cover rounded-lg">
+                                <div>
+                                    <p class="font-medium">{{ $produk->nama ?? 'Alat Musik' }}</p>
+                                    <p class="text-sm text-gray-600">Rp {{ number_format($produk->harga ?? 0, 0, ',', '.') }}/hari</p>
+                                    <p class="text-sm text-gray-600 mt-1">Jumlah: {{ $item->jumlah ?? 1 }} unit</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Info Penyewaan -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-2">Periode Sewa</h4>
+                            <p class="text-sm text-gray-600">
+                                {{ $pemesanan->tanggal_mulai ? \Carbon\Carbon::parse($pemesanan->tanggal_mulai)->format('d M Y') : '-' }} - 
+                                {{ $pemesanan->tanggal_selesai ? \Carbon\Carbon::parse($pemesanan->tanggal_selesai)->format('d M Y') : '-' }}
+                            </p>
+                            <p class="text-sm text-gray-600 mt-1">
+                                <span class="font-medium">Durasi:</span> 
+                                @if($pemesanan->tanggal_mulai && $pemesanan->tanggal_selesai)
+                                    {{ \Carbon\Carbon::parse($pemesanan->tanggal_mulai)->diffInDays(\Carbon\Carbon::parse($pemesanan->tanggal_selesai)) }} hari
+                                @else
+                                    -
+                                @endif
+                            </p>
+                            <p class="text-sm text-gray-600 mt-1">Harap dikembalikan: {{ $pemesanan->tanggal_selesai ? \Carbon\Carbon::parse($pemesanan->tanggal_selesai)->format('d M Y') : '-' }}</p>
+                        </div>
+                    </div>
+                    <!-- Info Pembayaran -->
+                    <div class="mt-6 border-t pt-4">
+                        <h4 class="font-medium text-gray-900 mb-2">Pembayaran</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Konfirmasi Admin</p>
+                                <p class="font-medium">{{ $metodePembayaran }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Total Harga</p>
+                                <p class="font-medium">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Status Penyewaan</p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
+                                    {{ $status }}
+                                </span>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Tanggal Pemesanan</p>
+                                <p class="font-medium">
+                                    {{ $pemesanan->tanggal_pemesanan ? \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('d M Y H:i') : '-' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Informasi Pengembalian (hanya tampil jika status sudah_dikembalikan) -->
+                    @if($pemesanan->status_penyewaan === 'sudah_dikembalikan' && $pemesanan->pengembalian)
+                        <div class="pt-4 mt-4 border-t border-gray-200 grid grid-cols-3 gap-4">
+                            <div class="text-gray-500 font-medium">Tanggal Pengembalian</div>
+                            <div class="col-span-2">{{ $pemesanan->pengembalian->tanggal_pengembalian->format('d/m/Y H:i') }}</div>
+                            <div class="text-gray-500 font-medium">Kondisi</div>
+                            <div class="col-span-2">
+                                @switch($pemesanan->pengembalian->kondisi)
+                                    @case('sangat_baik')
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Sangat Baik</span>
+                                        @break
+                                    @case('baik')
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Baik</span>
+                                        @break
+                                    @case('rusak')
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Rusak</span>
+                                        @break
+                                    @case('hilang')
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Hilang</span>
+                                        @break
+                                    @default
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">-</span>
+                                @endswitch
+                            </div>
+                            <div class="text-gray-500 font-medium">Denda</div>
+                            <div class="col-span-2">{{ $pemesanan->pengembalian->denda ? 'Rp '.number_format($pemesanan->pengembalian->denda, 0, ',', '.') : '-' }}</div>
+                            <div class="text-gray-500 font-medium">Catatan</div>
+                            <div class="col-span-2 break-words">{{ $pemesanan->pengembalian->catatan ?? '-' }}</div>
+                        </div>
+                    @else
+                        <div class="pt-4 mt-4 border-t border-gray-200">
+                            <p class="text-sm text-yellow-600 bg-yellow-50 p-2 rounded-md">
+                                @if($pemesanan->status_penyewaan !== 'sudah_dikembalikan')
+                                    Data pengembalian akan muncul setelah proses pengembalian alat musik selesai diverifikasi
+                                @else
+                                    Data pengembalian tidak ditemukan
+                                @endif
+                            </p>
+                        </div>
+                    @endif
+                </div>
+                <!-- Modal Footer -->
+                <div class="border-t p-4 flex justify-end space-x-2">
+                    <button onclick="hideDetailModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Tutup
+                    </button>
+                    @if($pemesanan->verifikasiPembayaran && $pemesanan->verifikasiPembayaran->status_verifikasi === 'diterima')
+                    <a href="{{ route('pemesanan.invoice', $pemesanan->id) }}" 
+                       class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                        Unduh Invoice
+                    </a>
+                    @endif
+                </div>
+            </div>
+            @endforeach
         </div>
     </div>
 </div>
 
 <script>
-    function showDetailModal(pemesananElement) {
+    // Fungsi untuk menampilkan modal detail
+    function showDetailModal(pemesananId) {
         const modal = document.getElementById('detailModal');
-        const modalContent = modal.querySelector('div > div');
         
-        // Ambil data dari element
-        const data = {
-            id: pemesananElement.getAttribute('data-pemesanan-id'),
-            produkNama: pemesananElement.getAttribute('data-produk-nama'),
-            produkGambar: pemesananElement.getAttribute('data-produk-gambar'),
-            produkHarga: pemesananElement.getAttribute('data-produk-harga'),
-            jumlah: pemesananElement.getAttribute('data-jumlah'),
-            tanggalMulai: pemesananElement.getAttribute('data-tanggal-mulai'),
-            tanggalSelesai: pemesananElement.getAttribute('data-tanggal-selesai'),
-            durasi: pemesananElement.getAttribute('data-durasi'),
-            metodePembayaran: pemesananElement.getAttribute('data-metode-pembayaran'),
-            totalHarga: pemesananElement.getAttribute('data-total-harga'),
-            status: pemesananElement.getAttribute('data-status'),
-            statusClass: pemesananElement.getAttribute('data-status-class'),
-            tanggalPemesanan: pemesananElement.getAttribute('data-tanggal-pemesanan')
-        };
-
-        // Format harga
-        const formatRupiah = (number) => {
-            return new Intl.NumberFormat('id-ID').format(number);
-        };
-
-        // Buat konten modal
-        modalContent.innerHTML = `
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center border-b p-4">
-                <h3 class="text-lg font-bold">Detail Pemesanan #${data.id}</h3>
-                <button onclick="hideDetailModal()" class="text-gray-500 hover:text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <!-- Modal Body -->
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Info Produk -->
-                    <div>
-                        <h4 class="font-medium text-gray-900 mb-2">Produk</h4>
-                        <div class="flex items-start space-x-4">
-                            <img src="${data.produkGambar}" alt="${data.produkNama}" class="w-16 h-16 object-cover rounded-lg">
-                            <div>
-                                <p class="font-medium">${data.produkNama}</p>
-                                <p class="text-sm text-gray-600">Rp ${formatRupiah(data.produkHarga)}/hari</p>
-                                <p class="text-sm text-gray-600 mt-1">Jumlah: ${data.jumlah} unit</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Info Penyewaan -->
-                    <div>
-                        <h4 class="font-medium text-gray-900 mb-2">Periode Sewa</h4>
-                        <p class="text-sm text-gray-600">${data.tanggalMulai} - ${data.tanggalSelesai}</p>
-                        <p class="text-sm text-gray-600 mt-1"><span class="font-medium">Durasi:</span> ${data.durasi}</p>
-                    </div>
-                </div>
-                <!-- Info Pembayaran -->
-                <div class="mt-6 border-t pt-4">
-                    <h4 class="font-medium text-gray-900 mb-2">Pembayaran</h4>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600">Metode</p>
-                            <p class="font-medium">${data.metodePembayaran}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Total Harga</p>
-                            <p class="font-medium">Rp ${formatRupiah(data.totalHarga)}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Status</p>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${data.statusClass}">
-                                ${data.status}
-                            </span>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Tanggal Pemesanan</p>
-                            <p class="font-medium">${data.tanggalPemesanan}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Footer -->
-            <div class="border-t p-4 flex justify-end space-x-2">
-                <button onclick="hideDetailModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Tutup
-                </button>
-                <a href="/pemesanan/${data.id}/invoice" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
-                    Unduh Invoice
-                </a>
-            </div>
-        `;
-
+        // Sembunyikan semua konten modal terlebih dahulu
+        document.querySelectorAll('[id^="modal-content-"]').forEach(el => {
+            el.classList.add('hidden');
+        });
+        
+        // Tampilkan konten modal yang dipilih
+        const modalContent = document.getElementById(`modal-content-${pemesananId}`);
+        if (modalContent) {
+            modalContent.classList.remove('hidden');
+        }
+        
         // Tampilkan modal
         modal.classList.remove('hidden');
     }
 
+    // Fungsi untuk menyembunyikan modal detail
     function hideDetailModal() {
         document.getElementById('detailModal').classList.add('hidden');
     }
@@ -379,5 +568,106 @@
             hideDetailModal();
         }
     });
+
+    // Fungsi untuk inisialisasi rating stars
+    function initRatingStars(containerId, inputId) {
+        const stars = document.querySelectorAll(`#${containerId} .star`);
+        const ratingInput = document.getElementById(inputId);
+        
+        stars.forEach(star => {
+            // Hover effect
+            star.addEventListener('mouseover', () => {
+                const value = parseInt(star.getAttribute('data-value'));
+                highlightStars(value, containerId);
+            });
+            
+            // Click event
+            star.addEventListener('click', (e) => {
+                const value = parseInt(star.getAttribute('data-value'));
+                ratingInput.value = value;
+                highlightStars(value, containerId);
+            });
+            
+            // Reset to selected value when mouse leaves
+            star.addEventListener('mouseout', () => {
+                const currentValue = parseInt(ratingInput.value) || 0;
+                highlightStars(currentValue, containerId);
+            });
+        });
+    }
+    
+    // Fungsi untuk menyorot bintang
+    function highlightStars(count, containerId) {
+        const stars = document.querySelectorAll(`#${containerId} .star`);
+        stars.forEach((star, index) => {
+            const value = parseInt(star.getAttribute('data-value'));
+            if (value <= count) {
+                star.classList.add('fill-current');
+            } else {
+                star.classList.remove('fill-current');
+            }
+        });
+    }
+    
+    // Inisialisasi saat dokumen siap
+    document.addEventListener('DOMContentLoaded', function() {
+        // Untuk setiap form ulasan yang ada
+        @foreach($pemesanans as $pemesanan)
+            @if($pemesanan->status_penyewaan === 'sudah_dikembalikan')
+                // Form ulasan baru
+                if (document.getElementById('rating-stars-{{ $pemesanan->id }}')) {
+                    initRatingStars('rating-stars-{{ $pemesanan->id }}', 'rating-input-{{ $pemesanan->id }}');
+                }
+                
+                // Form edit ulasan
+                if (document.getElementById('edit-rating-stars-{{ $pemesanan->id }}')) {
+                    initRatingStars('edit-rating-stars-{{ $pemesanan->id }}', 'edit-rating-input-{{ $pemesanan->id }}');
+                    
+                    // Set default value untuk form edit jika ada ulasan
+                    @if($ulasan = $pemesanan->ulasan->firstWhere('id_pengguna', auth()->id()))
+                        document.getElementById('edit-rating-input-{{ $pemesanan->id }}').value = {{ $ulasan->rating }};
+                        highlightStars({{ $ulasan->rating }}, 'edit-rating-stars-{{ $pemesanan->id }}');
+                    @endif
+                }
+            @endif
+        @endforeach
+    });
+    
+    // Fungsi untuk toggle ulasan section
+    function toggleUlasanSection(pemesananId) {
+        const section = document.getElementById(`ulasan-section-${pemesananId}`);
+        section.classList.toggle('hidden');
+        
+        // Inisialisasi rating stars saat section dibuka
+        if (!section.classList.contains('hidden')) {
+            setTimeout(() => {
+                if (document.getElementById(`rating-stars-${pemesananId}`)) {
+                    initRatingStars(`rating-stars-${pemesananId}`, `rating-input-${pemesananId}`);
+                }
+                if (document.getElementById(`edit-rating-stars-${pemesananId}`)) {
+                    initRatingStars(`edit-rating-stars-${pemesananId}`, `edit-rating-input-${pemesananId}`);
+                }
+            }, 100);
+        }
+    }
+    
+    // Fungsi untuk show edit form
+    function showEditForm(pemesananId) {
+        document.getElementById(`existing-review-${pemesananId}`).classList.add('hidden');
+        document.getElementById(`edit-ulasan-form-${pemesananId}`).classList.remove('hidden');
+        
+        // Inisialisasi rating stars saat form edit ditampilkan
+        setTimeout(() => {
+            if (document.getElementById(`edit-rating-stars-${pemesananId}`)) {
+                initRatingStars(`edit-rating-stars-${pemesananId}`, `edit-rating-input-${pemesananId}`);
+            }
+        }, 100);
+    }
+    
+    // Fungsi untuk hide edit form
+    function hideEditForm(pemesananId) {
+        document.getElementById(`existing-review-${pemesananId}`).classList.remove('hidden');
+        document.getElementById(`edit-ulasan-form-${pemesananId}`).classList.add('hidden');
+    }
 </script>
 @endsection
