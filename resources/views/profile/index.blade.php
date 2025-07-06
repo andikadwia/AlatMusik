@@ -123,7 +123,7 @@
 
                             <!-- Username Field -->
                             <div>
-                                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengguna</label>
                                 <input type="text" id="username" name="username" value="{{ old('username', $user->username) }}" 
                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
                                 @error('username')
@@ -198,7 +198,7 @@
 
                         <div class="mt-6">
                             <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
-                                Ubah Password
+                                Ubah Kata Sandi
                             </button>
                         </div>
                     </form>

@@ -3,10 +3,9 @@
 @section('title', 'Insphony - Dasbor')
 
 @section('content')
+<h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Dashboard</h1>
 <div class="main-content">
     <div class="bg-white rounded-lg shadow-xl p-5">
-        <h2 class="text-2xl font-bold mb-5">Dashboard</h2>
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-6">
             <!-- Card Total Alat Musik -->
             <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
