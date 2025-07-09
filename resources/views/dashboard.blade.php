@@ -1,3 +1,0 @@
-<div>
-DASHBOARD FROM ZIDAN HAMANA PUTRA
-</div>

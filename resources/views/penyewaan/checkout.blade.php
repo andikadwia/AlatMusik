@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8 pt-16">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Form Penyewaan</h2>
 
     @if(!isset($product) || !isset($start_date) || !isset($end_date) || !isset($quantity))
@@ -142,21 +142,21 @@
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Unggah Foto Jaminan</label>
-                <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                <div class="block text-sm font-medium text-gray-700 mb-1" >Unggah Foto Jaminan</div>
+                <label class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                     <div class="space-y-1 text-center">
                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <div class="flex text-sm text-gray-600">
-                            <label for="foto_jaminan" class="relative cursor-pointer rounded-md bg-white font-medium text-[#a08963] hover:text-[#8a7554] focus-within:outline-none focus-within:ring-2 focus-within:ring-[#a08963] focus-within:ring-offset-2">
+                            <label for="foto_jaminan" class="relative cursor-pointer rounded-md bg-white font-medium text-[#a08963] hover:text-[#8a7554] focus-within:outline-none">
                                 <span>Unggah Berkas</span>
                                 <input id="foto_jaminan" name="foto_jaminan" type="file" class="sr-only" accept="image/*" required>
                             </label>
                         </div>
                         <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
                     </div>
-                </div>
+                </label>
                 <div id="file-preview-jaminan" class="mt-2 hidden">
                     <img id="preview-image-jaminan" class="h-32 rounded-md object-cover">
                 </div>
@@ -194,21 +194,21 @@
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Unggah Bukti Pembayaran</label>
-                <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                <div class="block text-sm font-medium text-gray-700 mb-1">Unggah Bukti Pembayaran</div>
+                <label class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6" for="bukti_pembayaran">
                     <div class="space-y-1 text-center">
                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <div class="flex text-sm text-gray-600">
-                            <label for="bukti_pembayaran" class="relative cursor-pointer rounded-md bg-white font-medium text-[#a08963] hover:text-[#8a7554] focus-within:outline-none focus-within:ring-2 focus-within:ring-[#a08963] focus-within:ring-offset-2">
+                            <label for="bukti_pembayaran" class="relative cursor-pointer rounded-md bg-white font-medium text-[#a08963] hover:text-[#8a7554] focus-within:outline-none ">
                                 <span>Unggah berkas</span>
                                 <input id="bukti_pembayaran" name="bukti_pembayaran" type="file" class="sr-only" accept="image/*" required>
                             </label>
                         </div>
                         <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
                     </div>
-                </div>
+                </label>
                 <div id="file-preview-bukti" class="mt-2 hidden">
                     <img id="preview-image-bukti" class="h-32 rounded-md object-cover">
                 </div>

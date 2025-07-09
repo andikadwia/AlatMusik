@@ -7,7 +7,7 @@
                      alt="Insphony Logo" 
                      class="w-20 xs:w-24 sm:w-28 md:w-36 h-auto hover:opacity-80 transition-opacity duration-200" />
             </a>
-
+            @unless(request()->is('products/*') || request()->is('products') || request()->is('penyewaan/form*') || request()->is('profile') || request()->is('riwayat'))
             <!-- Desktop Navigation - Centered -->
             <div class="hidden lg:flex items-center justify-center flex-1 mx-2 xl:mx-4">
                 <ul class="flex gap-3 sm:gap-4 xl:gap-6 2xl:gap-8">
@@ -43,6 +43,7 @@
                     </li>
                 </ul>
             </div>
+            @endunless
 
             <!-- Desktop Buttons - Right Aligned dengan penyesuaian responsif -->
             <div class="hidden lg:flex gap-2 min-w-[10rem] sm:min-w-[12rem] justify-end">
@@ -191,7 +192,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
-                            Pesanan Saya
+                            Riwayat sewa
                         </a>
                         <form action="{{ route('logout') }}" method="POST" class="px-3 py-2">
                             @csrf

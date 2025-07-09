@@ -102,7 +102,7 @@
             type="tel"
             id="nomorhandphone"
             name="nomorhandphone"
-            class="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary peer"
+            class="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-[#a08963] focus:border-[#a08963] peer"
             placeholder=" "
             value="{{ old('nomorhandphone') }}"
             maxlength="15"
@@ -121,7 +121,7 @@
         </div>
         
         <!-- Submit Button with Hover Effect -->
-        <button type="submit" class="w-full py-3 px-4 bg-primary hover:bg-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-4 focus:ring-primary/50 focus:outline-none">
+        <button type="submit" class="w-full py-3 px-4 bg-primary hover:bg-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-4 focus:ring-[#a08963] focus:border-[#a08963] focus:outline-none">
           <span class="flex items-center justify-center">
             <span>Kirim Kode OTP</span>
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
+      <p>© <span id="currentYear"></span> Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -276,6 +276,7 @@
         alert.remove();
       }, 5000);
     });
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
