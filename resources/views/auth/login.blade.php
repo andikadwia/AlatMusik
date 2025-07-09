@@ -117,51 +117,52 @@
         @csrf
 
         <!-- Username Field with Floating Label -->
-        <div class="relative z-0">
-          <input
-            type="text"
-            id="username"
-            name="username"
-            class="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary peer"
-            placeholder=" "
-            required
-          />
-          <label for="username" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">Nama Pengguna</label>
-          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-primary">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <div class="relative z-0">
+      <input type="text" 
+            id="username" 
+            name="username" 
+            class="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-2 focus:ring-[#a08963] focus:border-[#a08963] peer" 
+            placeholder=" " 
+            required />
+      <label for="username" 
+            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">
+          Nama Pengguna
+      </label>
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-primary">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-            </svg>
-          </div>
-        </div>
+          </svg>
+      </div>
+  </div>
 
         <!-- Password Field with Floating Label -->
         <div class="relative z-0">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary peer @error('password') border-red-500 @enderror"
-            placeholder=" "
-            required
-          />
-          <label for="password" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">Kata Sandi</label>
-          <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-            <button type="button" id="togglePassword" class="text-primary hover:text-amber-700 transition-colors duration-200">
-              <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-              </svg>
-            </button>
-          </div>
-          @error('password')
-            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
-          @enderror
-        </div>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    class="block w-full px-4 py-3 text-sm text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-2 focus:ring-[#a08963] focus:border-[#a08963] peer @error('password') border-red-500 @enderror"
+    placeholder=" "
+    required
+  />
+  <label for="password" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">Kata Sandi</label>
+  <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+    <button type="button" id="togglePassword" class="text-primary hover:text-amber-700 transition-colors duration-200">
+      <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+      </svg>
+    </button>
+  </div>
+  @error('password')
+    <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+  @enderror
+</div>
 
         <!-- Remember Me & Forgot Password -->
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <input id="remember" name="remember" type="checkbox" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary">
+            <input id="remember" name="remember" type="checkbox" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-[#a08963] focus:border-[#a08963]">
             <label for="remember" class="ml-2 text-sm font-medium text-gray-700 hover:text-gray-900 cursor-pointer transition-colors duration-200">Verifikasi</label>
           </div>
           <a href="{{ route('password.request') }}" class="text-sm font-medium text-primary hover:text-amber-800 hover:underline transition-all duration-300">
@@ -175,7 +176,7 @@
         </div>
 
         <!-- Login Button with Hover Effect -->
-        <button type="submit" class="w-full py-3 px-4 bg-primary hover:bg-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-4 focus:ring-primary/50 focus:outline-none">
+        <button type="submit" class="w-full py-3 px-4 bg-primary hover:bg-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-4 focus:ring-[#a08963] focus:border-[#a08963] focus:outline-none">
           <span class="flex items-center justify-center">
             <span>Masuk</span>
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -199,7 +200,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
+      <p>© <span id="currentYear"></span> Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -325,6 +326,7 @@
         });
       }, 5000);
     });
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>

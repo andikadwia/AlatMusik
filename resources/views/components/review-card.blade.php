@@ -35,24 +35,33 @@
     </div>
     
     <!-- User info -->
-    <div class="flex items-center mb-3">
-        <div class="relative w-10 h-10">
+   <div class="flex items-center mb-3">
+    <div class="relative w-10 h-10">
+        @if(!empty($review['image']))
             <img 
                 src="{{ $review['image'] }}" 
                 alt="{{ $review['name'] }}" 
                 class="w-full h-full rounded-full object-cover border-2 border-[#a08963] dark:border-[#a08963]"
-                onerror="this.onerror=null;this.src='https://via.placeholder.com/150?text=User'"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             />
-        </div>
-        <div class="ml-3">
-            <h3 class="font-semibold text-gray-800 dark:text-gray-900 text-base">
-                {{ $review['name'] }}
-            </h3>
-            <span class="text-xs text-gray-500 dark:text-gray-400">
-                Customer review
-            </span>
-        </div>
+            <div class="absolute inset-0 w-full h-full rounded-full bg-[#a08963] dark:bg-[#a08963] items-center justify-center text-white font-semibold text-sm border-2 border-[#a08963] dark:border-[#a08963]" style="display: none;">
+                {{ strtoupper(substr($review['name'], 0, 1)) }}
+            </div>
+        @else
+            <div class="w-full h-full rounded-full bg-[#a08963] dark:bg-[#a08963] flex items-center justify-center text-white font-semibold text-sm border-2 border-[#a08963] dark:border-[#a08963]">
+                {{ strtoupper(substr($review['name'], 0, 1)) }}
+            </div>
+        @endif
     </div>
+    <div class="ml-3">
+        <h3 class="font-semibold text-gray-800 dark:text-gray-900 text-base">
+            {{ $review['name'] }}
+        </h3>
+        <span class="text-xs text-gray-500 dark:text-gray-400">
+            Customer review
+        </span>
+    </div>
+</div>
     
     <!-- Rating and content -->
     <div class="flex-1 flex flex-col">

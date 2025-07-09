@@ -17,6 +17,8 @@ class Product extends Model
         'harga',
         'kategori',
         'path_gambar',
+        'rating_rata',
+        'total_ulasan',
     ];
 
         // Mengambil array path gambar

@@ -71,15 +71,15 @@
                     <div>
                         <h3 class="text-lg font-semibold uppercase mb-4 text-earth-100 border-b border-earth-500 pb-2">Bantuan</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-earth-200 hover:text-white transition-colors">FAQ</a></li>
-                            <li><a href="#" class="text-earth-200 hover:text-white transition-colors">Syarat & Ketentuan</a></li>
-                            <li><a href="#" class="text-earth-200 hover:text-white transition-colors">Kebijakan Privasi</a></li>
-                            <li><a href="#" class="text-earth-200 hover:text-white transition-colors">Cara Pembayaran</a></li>
+                            <li><button onclick="openModal('faqModal')" class="text-earth-200 hover:text-white transition-colors cursor-pointer text-left w-full">FAQ</button></li>
+                            <li><button onclick="openModal('termsModal')" class="text-earth-200 hover:text-white transition-colors cursor-pointer text-left w-full">Syarat & Ketentuan</button></li>
+                            <li><button onclick="openModal('privacyModal')" class="text-earth-200 hover:text-white transition-colors cursor-pointer text-left w-full">Kebijakan Privasi</button></li>
+                            <li><button onclick="openModal('paymentModal')" class="text-earth-200 hover:text-white transition-colors cursor-pointer text-left w-full">Cara Pembayaran</button></li>
                         </ul>
                     </div>
                     
                     <!-- Social Media -->
-<div>
+                   <div>
     <h3 class="text-lg font-semibold uppercase mb-4 text-earth-100 border-b border-earth-500 pb-2">Ikuti Kami</h3>
     <div class="flex flex-wrap gap-3">
         <!-- Facebook -->
@@ -97,7 +97,7 @@
         </a>
         
         <!-- TikTok -->
-        <a href="#" class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full transition-all hover:bg-black group">
+        <a href="https://www.tiktok.com/@masadekaa" class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full transition-all hover:bg-black group">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
             </svg>
@@ -116,9 +116,40 @@
             
             <!-- Copyright -->
             <div class="border-t border-earth-600 mt-10 pt-8 text-center">
-                <p class="text-earth-300">© 2025 Insphony. Hak Cipta Dilindungi.</p>
+                <p class="text-earth-300">© <span id="currentYear"></span> Insphony. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Include Modals -->
+@include('components.modals.faq')
+@include('components.modals.terms')
+@include('components.modals.privacy')
+@include('components.modals.payment')
+
+    <script>
+    // Fungsi modal
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Tutup modal saat klik di luar
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('fixed')) {
+            document.querySelectorAll('.fixed').forEach(modal => {
+                if (!modal.classList.contains('hidden')) {
+                    closeModal(modal.id);
+                }
+            });
+        }
+    });
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>

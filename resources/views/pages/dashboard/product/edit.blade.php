@@ -77,7 +77,7 @@
                             </div>
 
                             <div class="modal-action">
-                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                <button type="submit" class="btn bg-[#a08963] hover:bg-[#8a7555] text-white">Simpan Perubahan</button>
                                 <button type="button" onclick="document.getElementById('editModal-{{ $produk->id }}').close()" class="btn">Batal</button>
                             </div>
                         </form>

@@ -122,7 +122,7 @@
             type="text"
             id="kodeotp"
             name="kodeotp"
-            class="block w-full px-4 py-3 text-center text-lg text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary peer"
+            class="block w-full px-4 py-3 text-center text-lg text-gray-900 bg-transparent rounded-lg border border-primary/50 appearance-none focus:outline-none focus:ring-[#a08963] focus:border-[#a08963] peer"
             placeholder=" "
             maxlength="6"
             required
@@ -134,7 +134,7 @@
         </div>
         
         <!-- Submit Button -->
-        <button type="submit" class="w-full py-3 px-4 bg-primary hover:bg-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-4 focus:ring-primary/50 focus:outline-none">
+        <button type="submit" class="w-full py-3 px-4 bg-primary hover:bg-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:ring-4 focus:ring-[#a08963] focus:border-[#a08963] focus:outline-none">
           <span class="flex items-center justify-center">
             <span>Verifikasi</span>
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -163,7 +163,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
+      <p>© <span id="currentYear"></span> Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -239,6 +239,7 @@
         alert.remove();
       }, 5000);
     });
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>

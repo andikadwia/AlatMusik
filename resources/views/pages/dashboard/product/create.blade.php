@@ -64,7 +64,7 @@
                         
             <div class="modal-action">
                 <button type="button" class="btn" onclick="document.getElementById('modal-tambah').close()">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn bg-[#a08963] hover:bg-[#8a7555] text-white">Simpan</button>
             </div>
         </form>
     </div>

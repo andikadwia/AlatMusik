@@ -147,7 +147,7 @@
               type="password"
               id="password"
               name="password"
-              class="block w-full px-4 py-3 text-sm text-gray-900 bg-white rounded-lg border border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary"
+              class="block w-full px-4 py-3 text-sm text-gray-900 bg-white rounded-lg border border-primary/50 focus:outline-none focus:ring-[#a08963] focus:border-[#a08963]"
               required
               minlength="8"
               maxlength="20"
@@ -175,7 +175,7 @@
               type="password"
               id="password_confirmation"
               name="password_confirmation"
-              class="block w-full px-4 py-3 text-sm text-gray-900 bg-white rounded-lg border border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary"
+              class="block w-full px-4 py-3 text-sm text-gray-900 bg-white rounded-lg border border-primary/50 focus:outline-none focus:ring-[#a08963] focus:border-[#a08963]"
               required
               minlength="8"
               maxlength="20"
@@ -193,7 +193,7 @@
         </div>
         
         <!-- Submit Button -->
-        <button type="submit" id="submit-btn" class="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 focus:ring-4 focus:ring-primary/50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
+        <button type="submit" id="submit-btn" class="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 focus:ring-4 focus:ring-[#a08963] focus:border-[#a08963] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
           <span class="flex items-center justify-center">
             <span id="btn-text">Atur Ulang Kata Sandi</span>
             <svg id="btn-spinner" class="w-4 h-4 ml-2 hidden animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +215,7 @@
   <!-- Footer -->
   <footer class="fixed bottom-0 w-full py-3 bg-black/30 backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center text-white text-sm">
-      <p>© 2025 Insphony. Hak Cipta Dilindungi.</p>
+      <p>© <span id="currentYear"></span> Insphony. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -396,6 +396,7 @@
         alert.remove();
       }, 5000);
     });
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>

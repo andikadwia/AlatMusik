@@ -5,26 +5,37 @@
     <div class="container mx-auto px-4">
         <!-- Tombol Kembali ke Beranda -->
         <button onclick="window.location.href='{{ url('/') }}'" 
-                class="mb-4 flex items-center px-4 py-2 bg-white text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors">
+                class="mb-4 mt-4 flex items-center px-4 py-2 bg-white text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Kembali ke Beranda
         </button>
-        
         <div class="flex flex-col md:flex-row gap-8">
             <!-- Sidebar Profile -->
             <div class="w-full md:w-64 lg:w-80 flex-shrink-0">
                 <div class="bg-white rounded-lg shadow-sm p-6 h-[calc(114vh-4rem)] flex flex-col">
                     <!-- User Profile Image and Info -->
                     <div class="flex flex-col items-center">
-                        <div class="relative mb-4">
-                            <img src="{{ $user->foto_profil ? asset($user->foto_profil) : asset('images/gitar.jpg') }}" 
-                                alt="Foto Profil" 
-                                class="w-24 h-24 rounded-full object-cover border-2 border-primary">
+                        <div class="relative mb-4 group">
+                            @if($user->foto_profil)
+                            <div class="relative cursor-pointer" id="profile-image-container">
+                                <img src="{{ asset($user->foto_profil) }}" 
+                                    alt="Foto Profil" 
+                                    class="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                                    id="profile-image-preview">
+                            </div>
+                        @else
+                            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white overflow-hidden border-2 border-primary">
+                                <span class="text-3xl font-medium">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </span>
+                            </div>
+                        @endif
+                            
                         </div>
                         <h2 class="text-xl font-bold text-gray-800">{{ $user->name }}</h2>
-                        <h3 class="text-gray-600 text-sm">{{ $user->email }}</h3>
+                        <h3 class="text-gray-600 text-sm">{{ '' . $user->email }}</h3>
                     </div>
 
                     <!-- Navigation Menu -->
@@ -204,140 +215,153 @@
                                     </button>
                                 @endif
                             </div>
-                            
                             <!-- Section Ulasan -->
-                            <div id="ulasan-section-{{ $pemesanan->id }}" class="mt-4 border p-6 rounded-lg bg-white shadow-sm hidden">
+                            <div id="ulasan-section-{{ $pemesanan->id }}" class="mt-4 hidden">
+                            <div class="border border-gray-200 rounded-lg bg-white shadow-sm w-full">
+                                <div class="p-6">
                                 <h3 class="text-center text-lg font-bold mb-4">Ulasan</h3>
                                 
                                 @if($ulasan)
-                                    <!-- Tampilan Ulasan yang sudah ada (diubah agar mirip dengan form) -->
-                                    <div class="mb-6" id="existing-review-{{ $pemesanan->id }}">
-                                        <!-- Rating -->
+                                    <!-- Tampilan Ulasan yang sudah ada -->
+                                    <div id="existing-review-{{ $pemesanan->id }}" class="space-y-4">
+                                    <!-- Rating -->
+                                    <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                                        <div class="flex justify-center mb-4">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                <svg xmlns="http://www.w3.org/2000/svg" 
-                                                    class="w-8 h-8 {{ $i <= $ulasan->rating ? 'text-yellow-400 fill-current' : 'text-yellow-400' }}" 
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
-                                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
-                                                </svg>
-                                            @endfor
+                                        <div class="flex justify-center">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                            class="w-8 h-8 {{ $i <= $ulasan->rating ? 'text-yellow-400 fill-current' : 'text-yellow-400' }}" 
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                                            </svg>
+                                        @endfor
                                         </div>
+                                    </div>
 
-                                        <!-- Komentar -->
+                                    <!-- Komentar -->
+                                    <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
-                                        <div class="w-full border border-gray-300 p-3 rounded-lg mb-4 bg-gray-50 min-h-[120px]">
-                                            <p class="text-gray-700">{{ $ulasan->komentar }}</p>
+                                        <div class="w-full border border-gray-300 p-3 rounded-lg bg-gray-50 max-h-60 overflow-y-auto">
+                                        <p class="text-gray-700 whitespace-pre-wrap break-all">{{ $ulasan->komentar }}</p>
                                         </div>
+                                    </div>
 
-                                        <p class="text-sm text-gray-500 mb-4">
-                                            Ditulis pada: {{ $ulasan->dibuat_pada->format('d M Y H:i') }}
-                                            @if($ulasan->dibuat_pada != $ulasan->diedit_pada)
-                                                (Terakhir diupdate: {{ $ulasan->diedit_pada->format('d M Y H:i') }})
-                                            @endif
-                                        </p>
+                                    <div class="text-sm text-gray-500">
+                                        <p>Ditulis pada: {{ $ulasan->dibuat_pada->format('d M Y H:i') }}</p>
+                                        @if($ulasan->dibuat_pada != $ulasan->diedit_pada)
+                                        <p>Terakhir diupdate: {{ $ulasan->diedit_pada->format('d M Y H:i') }}</p>
+                                        @endif
+                                    </div>
 
-                                        <div class="flex justify-end space-x-2">
-                                            @if($ulasan->bisa_edit == 1)
-                                                <!-- Tampilkan tombol edit jika bisa_diedit = 1 -->
-                                                <button onclick="showEditForm('{{ $pemesanan->id }}')" 
-                                                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                                                    Edit
-                                                </button>
-                                            @endif
-                                            
-                                            <!-- Tombol hapus selalu tampil -->
-                                            <form action="{{ route('ulasan.destroy', $ulasan->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-                                                        onclick="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?')">
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        </div>
+                                    <div class="flex justify-end space-x-2 pt-4">
+                                        @if($ulasan->bisa_edit == 1)
+                                        <button onclick="showEditForm('{{ $pemesanan->id }}')" 
+                                            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                            Edit
+                                        </button>
+                                        @endif
+                                        
+                                        <form action="{{ route('ulasan.destroy', $ulasan->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?')">
+                                            Hapus
+                                        </button>
+                                        </form>
+                                    </div>
                                     </div>
                                     
                                     <!-- Form Edit Ulasan -->
-                                    <div id="edit-ulasan-form-{{ $pemesanan->id }}" class="hidden">
-                                        <form action="{{ route('ulasan.update', $ulasan->id) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
-                                            <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
-                                            <input type="hidden" name="bisa_edit" value="0">
+                                    <div id="edit-ulasan-form-{{ $pemesanan->id }}" class="hidden space-y-4">
+                                    <form action="{{ route('ulasan.update', $ulasan->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
+                                        <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
+                                        <input type="hidden" name="bisa_edit" value="0">
 
-                                            <!-- Rating -->
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                                            <div class="flex justify-center mb-4" id="edit-rating-stars-{{ $pemesanan->id }}">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" 
-                                                        class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform 
-                                                        {{ $i <= $ulasan->rating ? 'text-yellow-400 fill-current' : 'text-yellow-400' }}" 
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
-                                                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
-                                                    </svg>
-                                                @endfor
-                                            </div>
-                                            <input type="hidden" name="rating" id="edit-rating-input-{{ $pemesanan->id }}" value="{{ $ulasan->rating }}" required>
+                                        <!-- Rating -->
+                                        <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                        <div class="flex justify-center" id="edit-rating-stars-{{ $pemesanan->id }}">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                            <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" 
+                                                class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform 
+                                                {{ $i <= $ulasan->rating ? 'text-yellow-400 fill-current' : 'text-yellow-400' }}" 
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                                            </svg>
+                                            @endfor
+                                        </div>
+                                        <input type="hidden" name="rating" id="edit-rating-input-{{ $pemesanan->id }}" value="{{ $ulasan->rating }}" required>
+                                        </div>
 
-                                            <!-- Komentar -->
-                                            <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
-                                            <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
-                                                    class="w-full border border-gray-300 p-3 rounded-lg mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400" required>{{ $ulasan->komentar }}</textarea>
+                                        <!-- Komentar -->
+                                        <div>
+                                        <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
+                                        <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
+                                            class="w-full border border-gray-300 p-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400 whitespace-pre-wrap">{{ $ulasan->komentar }}</textarea>
+                                        </div>
 
-                                            <div class="flex justify-end space-x-2">
-                                                <button type="button" onclick="hideEditForm('{{ $pemesanan->id }}')"
-                                                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                                                    Batal
-                                                </button>
-                                                <button type="submit" 
-                                                        class="px-4 py-2 bg-[#a47a4e] hover:bg-[#8b623a] text-white rounded-lg font-semibold transition-colors">
-                                                    Simpan Perubahan
-                                                </button>
-                                            </div>
-                                        </form>
+                                        <div class="flex justify-end space-x-2 pt-4">
+                                        <button type="button" onclick="hideEditForm('{{ $pemesanan->id }}')"
+                                            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                            Batal
+                                        </button>
+                                        <button type="submit" 
+                                            class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors">
+                                            Simpan Perubahan
+                                        </button>
+                                        </div>
+                                    </form>
                                     </div>
                                 @else
                                     <!-- Form Ulasan Baru -->
-                                    <form action="{{ route('ulasan.store') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
-                                        <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
+                                    <form action="{{ route('ulasan.store') }}" method="POST" class="space-y-4">
+                                    @csrf
+                                    <input type="hidden" name="id_pemesanan" value="{{ $pemesanan->id }}">
+                                    <input type="hidden" name="id_produk" value="{{ $item->id_produk }}">
 
-                                        <!-- Rating -->
+                                    <!-- Rating -->
+                                    <div>
                                         <label for="rating-{{ $pemesanan->id }}" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                                        <div class="flex justify-center mb-4" id="rating-stars-{{ $pemesanan->id }}">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
-                                                    class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform text-yellow-400">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
-                                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
-                                                </svg>
-                                            @endfor
+                                        <div class="flex justify-center" id="rating-stars-{{ $pemesanan->id }}">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <svg xmlns="http://www.w3.org/2000/svg" data-value="{{ $i }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
+                                            class="w-8 h-8 cursor-pointer star hover:scale-110 transition-transform text-yellow-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.618 4.985a1 1 0 00.95.69h5.246c.969 0 1.371 1.24.588 1.81l-4.244 3.085a1 1 0 00-.364 1.118l1.618 4.985c.3.921-.755 1.688-1.54 1.118l-4.244-3.085a1 1 0 00-1.176 0l-4.244 3.085c-.785.57-1.84-.197-1.54-1.118l1.618-4.985a1 1 0 00-.364-1.118L2.647 10.41c-.783-.57-.38-1.81.588-1.81h5.246a1 1 0 00.95-.69l1.618-4.985z" />
+                                            </svg>
+                                        @endfor
                                         </div>
                                         <input type="hidden" name="rating" id="rating-input-{{ $pemesanan->id }}" required>
+                                    </div>
 
-                                        <!-- Komentar -->
+                                    <!-- Komentar -->
+                                    <div>
                                         <label for="komentar" class="block text-sm font-medium text-gray-700 mb-2">Ulasan</label>
                                         <textarea name="komentar" rows="4" placeholder="Bagikan pengalaman anda..." 
-                                                class="w-full border border-gray-300 p-3 rounded-lg mb-4 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400" required></textarea>
+                                        class="w-full border border-gray-300 p-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400 whitespace-pre-wrap"></textarea>
+                                    </div>
 
-                                        <div class="flex justify-end space-x-2">
-                                            <button type="button" onclick="toggleUlasanSection('{{ $pemesanan->id }}')"
-                                                    class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                                                Batal
-                                            </button>
-                                            <button type="submit" 
-                                                    class="px-4 py-2 bg-[#a47a4e] hover:bg-[#8b623a] text-white rounded-lg font-semibold transition-colors">
-                                                Kirim Ulasan
-                                            </button>
-                                        </div>
+                                    <div class="flex justify-end space-x-2 pt-4">
+                                        <button type="button" onclick="toggleUlasanSection('{{ $pemesanan->id }}')"
+                                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                        Batal
+                                        </button>
+                                        <button type="submit" 
+                                        class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors">
+                                        Kirim Ulasan
+                                        </button>
+                                    </div>
                                     </form>
                                 @endif
+                                </div>
+                            </div>
                             </div>
                         </div>
                         @empty
@@ -536,6 +560,18 @@
         </div>
     </div>
 </div>
+<style>
+    .ulasan-container {
+        max-height: 400px; /* Atur tinggi maksimum sesuai kebutuhan */
+        overflow-y: auto; /* Tambahkan scroll vertikal jika konten melebihi tinggi */
+    }
+    
+    .ulasan-komentar {
+        min-height: 120px; /* Pertahankan tinggi minimum */
+        max-height: 200px; /* Batasi tinggi maksimum */
+        overflow-y: auto; /* Tambahkan scroll jika diperlukan */
+    }
+</style>
 
 <script>
     // Fungsi untuk menampilkan modal detail

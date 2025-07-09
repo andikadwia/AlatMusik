@@ -3,12 +3,12 @@
 @section('title', 'Insphony - Dasbor')
 
 @section('content')
-<h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Dashboard</h1>
+<h1 class="text-2xl font-bold text-[#5a4d3a] mb-6 text-center">Dashboard</h1>
 <div class="main-content">
-    <div class="bg-white rounded-lg shadow-xl p-5">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-6">
+    <div class="bg-white rounded-lg shadow-xl p-5 border border-[#d4c8a8]">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Card Total Alat Musik -->
-            <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
+            <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Alat Musik</p>
@@ -23,7 +23,7 @@
             </div>
 
             <!-- Card Total Users -->
-            <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
+            <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pelanggan</p>
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Card Total Pemesan -->
-            <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
+            <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pemesan</p>
@@ -53,7 +53,7 @@
             </div>
 
             <!-- Card Total Peminjam Aktif -->
-            <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
+            <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Peminjam Aktif</p>
@@ -68,7 +68,7 @@
             </div>
 
             <!-- Card Total Pengembalian -->
-            <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
+            <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pengembalian</p>
@@ -83,7 +83,7 @@
             </div>
 
             <!-- Card Total Pendapatan -->
-            <div class="bg-gradient-to-b from-[#C9B194] to-[#3A3224] rounded-lg p-10 text-white">
+            <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-light">Total Pendapatan</p>
