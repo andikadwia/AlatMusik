@@ -31,7 +31,7 @@
 <body class="bg-gray-100 min-h-screen flex flex-col justify-end">
     <!-- Demo content to show footer positioning -->
     <div class="flex-1 p-8">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">Insphony Website</h1>
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">Insphony Sewa Alat Musik</h1>
         <p class="text-center text-gray-600">Nikmati layanan sewa alat musik yang praktis, aman, dan terpercaya bersama Insphony.</p>
     </div>
 

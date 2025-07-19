@@ -18,7 +18,7 @@
     <!-- Product thumbnail -->
     <div class="absolute top-3 right-3 flex items-center gap-2">
         <div class="text-xs text-gray-600 dark:text-gray-400 text-right">
-            Review for:<br>
+            Ulasan untuk:<br>
             <span class="font-medium text-[#a08963] dark:text-[#a08963]">
                 {{ $review['product_name'] }}
             </span>
@@ -58,7 +58,7 @@
             {{ $review['name'] }}
         </h3>
         <span class="text-xs text-gray-500 dark:text-gray-400">
-            Customer review
+            Pelanggan
         </span>
     </div>
 </div>
