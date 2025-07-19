@@ -88,3 +88,8 @@ Aplikasi akan:
 Proyek ini dikembangkan untuk tujuan pembelajaran dan pengembangan aplikasi manajemen reservasi dan pemesanan alat musik.
 Hak cipta © 2025 Insphony. Hak Cipta Dilindungi.
 Anda bebas memodifikasi dan menggunakan proyek ini, selama menyertakan atribusi kepada pembuat asli.
+
+
+Link Video Presentasi: https://youtu.be/FNDD6sKr0AA
+
+Link Video Detail Tutorial Penggunaan Aplikasi: https://youtu.be/4cnygGjLFD8
