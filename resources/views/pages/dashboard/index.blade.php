@@ -56,7 +56,7 @@
             <div class="bg-gradient-to-b from-[#a08963] to-[#5a4d3a] rounded-lg p-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="font-light">Total Peminjam Aktif</p>
+                        <p class="font-light">Total Penyewa Aktif</p>
                         <h3 class="text-3xl font-bold">{{ $peminjamAktif }}</h3>
                     </div>
                     <div class="bg-white bg-opacity-20 p-3 rounded-full">

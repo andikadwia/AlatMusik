@@ -96,19 +96,35 @@
                             $jumlah = $item->jumlah ?? 1;
                             $ulasan = $pemesanan->ulasan->firstWhere('id_pengguna', auth()->id());
                             
-                            // Status dan class
-                            if ($pemesanan->status_penyewaan == 'belum_dipinjam') {
-                                $status = 'Menunggu Pengambilan';
-                                $statusClass = 'bg-blue-100 text-blue-800';
-                            } elseif ($pemesanan->status_penyewaan == 'sedang_dipinjam') {
-                                $status = 'Sedang Dipinjam';
-                                $statusClass = 'bg-yellow-100 text-yellow-800';
-                            } elseif ($pemesanan->status_penyewaan == 'sudah_dikembalikan') {
-                                $status = 'Sudah dikembalikan';
-                                $statusClass = 'bg-green-100 text-green-800';
-                            } else {
-                                $status = 'Menunggu Pembayaran';
-                                $statusClass = 'bg-gray-100 text-gray-800';
+                            // Default value
+                            $status = 'Menunggu Pembayaran';
+                            $statusClass = 'bg-gray-100 text-gray-800';
+                            
+                            // Cek verifikasi pembayaran
+                            if ($pemesanan->verifikasiPembayaran) {
+                                switch($pemesanan->verifikasiPembayaran->status_verifikasi) {
+                                    case 'diterima':
+                                        // Hanya tampilkan status penyewaan jika pembayaran diterima
+                                        if ($pemesanan->status_penyewaan == 'belum_dipinjam') {
+                                            $status = 'Menunggu Pengambilan';
+                                            $statusClass = 'bg-blue-100 text-blue-800';
+                                        } elseif ($pemesanan->status_penyewaan == 'sedang_dipinjam') {
+                                            $status = 'Sedang Dipinjam';
+                                            $statusClass = 'bg-yellow-100 text-yellow-800';
+                                        } elseif ($pemesanan->status_penyewaan == 'sudah_dikembalikan') {
+                                            $status = 'Sudah Dikembalikan';
+                                            $statusClass = 'bg-green-100 text-green-800';
+                                        }
+                                        break;
+                                    case 'menunggu':
+                                        $status = 'Menunggu Verifikasi Pembayaran';
+                                        $statusClass = 'bg-orange-100 text-orange-800';
+                                        break;
+                                    case 'ditolak':
+                                        $status = 'Pembayaran Ditolak';
+                                        $statusClass = 'bg-red-100 text-red-800';
+                                        break;
+                                }
                             }
                             
                             // Durasi
@@ -249,6 +265,7 @@
 
                                     <div class="text-sm text-gray-500">
                                         <p>Ditulis pada: {{ $ulasan->dibuat_pada->format('d M Y H:i') }}</p>
+                                        <p>Ulasan hanya dapat diedit satu kali. Pastikan isi ulasan sudah sesuai sebelum menyimpannya.</p>
                                         @if($ulasan->dibuat_pada != $ulasan->diedit_pada)
                                         <p>Terakhir diupdate: {{ $ulasan->diedit_pada->format('d M Y H:i') }}</p>
                                         @endif
@@ -397,19 +414,35 @@
                 $item = $pemesanan->items->first();
                 $produk = $item->produk ?? null;
                 
-                // Status dan class
-                if ($pemesanan->status_penyewaan == 'belum_dipinjam') {
-                    $status = 'Menunggu Pengambilan';
-                    $statusClass = 'bg-blue-100 text-blue-800';
-                } elseif ($pemesanan->status_penyewaan == 'sedang_dipinjam') {
-                    $status = 'Sedang Dipinjam';
-                    $statusClass = 'bg-yellow-100 text-yellow-800';
-                } elseif ($pemesanan->status_penyewaan == 'sudah_dikembalikan') {
-                    $status = 'Sudah dikembalikan';
-                    $statusClass = 'bg-green-100 text-green-800';
-                } else {
-                    $status = 'Menunggu Pembayaran';
-                    $statusClass = 'bg-gray-100 text-gray-800';
+                // Default value
+                $status = 'Menunggu Pembayaran';
+                $statusClass = 'bg-gray-100 text-gray-800';
+                
+                // Cek verifikasi pembayaran
+                if ($pemesanan->verifikasiPembayaran) {
+                    switch($pemesanan->verifikasiPembayaran->status_verifikasi) {
+                        case 'diterima':
+                            // Hanya tampilkan status penyewaan jika pembayaran diterima
+                            if ($pemesanan->status_penyewaan == 'belum_dipinjam') {
+                                $status = 'Menunggu Pengambilan';
+                                $statusClass = 'bg-blue-100 text-blue-800';
+                            } elseif ($pemesanan->status_penyewaan == 'sedang_dipinjam') {
+                                $status = 'Sedang Dipinjam';
+                                $statusClass = 'bg-yellow-100 text-yellow-800';
+                            } elseif ($pemesanan->status_penyewaan == 'sudah_dikembalikan') {
+                                $status = 'Sudah Dikembalikan';
+                                $statusClass = 'bg-green-100 text-green-800';
+                            }
+                            break;
+                        case 'menunggu':
+                            $status = 'Menunggu Verifikasi Pembayaran';
+                            $statusClass = 'bg-orange-100 text-orange-800';
+                            break;
+                        case 'ditolak':
+                            $status = 'Pembayaran Ditolak';
+                            $statusClass = 'bg-red-100 text-red-800';
+                            break;
+                    }
                 }
                 
                 // Metode Pembayaran
