@@ -1,79 +1,90 @@
-FYI:
-Project ini harus menggunakan database sql untuk menjalankannya. tabel pengguna tidak perlu di perhatikan karena tidak nyambung ke code yang ada di project ini. 
+# Aplikasi Penyewaan Alat Musik
 
-letak database sql nya di folder public.
+Aplikasi ini merupakan sistem manajemen reservasi dan penyewaan alat musik berbasis web. Dibangun dengan Laravel dan menggunakan Tailwind CSS untuk tampilan antarmuka.
 
-untuk akunnya user :
-username:user
-password:user12345
+## Fitur Utama
+- Manajemen data produk alat musik
+- Proses penyewaan dan pengembalian alat musik
+- Role pengguna: Admin & User
+- Dashboard responsif dengan Tailwind CSS
+- Autentikasi login menggunakan tabel `pengguna`
+- Pengiriman OTP ke WhatsApp menggunakan API Fonnte
 
-untuk akunnya admin :
-username:zidan
-password:zidan123
+## Persyaratan Minimum
+- **Laravel:** versi 10 atau lebih baru
+- **XAMPP:** versi 8.2.4 atau lebih baru
+- **PHP:** versi 8.1 atau lebih baru
+- **Node.js & NPM:** diperlukan untuk menjalankan Tailwind CSS
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Langkah-langkah Instalasi
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 1. Clone Repository
+```bash
+git clone https://github.com/andikadwia/AlatMusik.git
+cd AlatMusik  # Ganti dengan nama folder project Anda
+```
 
-## About Laravel
+### 2. Install Dependency Laravel
+```bash
+composer install
+npm install && npm run dev  # Opsional (hanya jika ada frontend)
+cp .env.example .env
+php artisan key:generate
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 3. Konfigurasi Database
+- File database `alatmusik,insphony.sql` tersedia di folder `public/`
+- Import file `alatmusik,insphony.sql` tersebut ke dalam MySQL melalui phpMyAdmin atau tool lain
+- Ubah konfigurasi `.env` agar sesuai dengan koneksi database Anda, contoh:
+```bash
+DB_DATABASE=alatmusik,insphony  # Ganti dengan nama db yang anda ubah (jika anda mengubah nama db nya)
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 3. Konfigurasi OTP WhatsApp via API Fonnte
+Aplikasi ini menggunakan API Fonnte untuk mengirimkan kode OTP ke WhatsApp.
+Cara Konfigurasi Token:
+- Daftar dan dapatkan token API di https://fonnte.com
+- Buka file: `app/Http/Controllers/OTPController.php`
+- Ubah bagian: `protected $deviceToken = "TOKEN_ANDA_DI_SINI";`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 5. Jalankan Migrasi dan Seeder (Opsional)
+Jika ingin mengatur ulang database dari awal, jalankan perintah:
+```bash
+php artisan migrate --seed
+```
 
-## Learning Laravel
+## Langkah-langkah Penggunaan
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Jalankan Server Lokal
+```bash
+php artisan serve
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Akses aplikasi melalui browser di `http://localhost:8000`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Akun Login
 
-## Laravel Sponsors
+#### Akun User
+- **Username:** `user`
+- **Password:** `user123456`
+bisa buat akun user baru melalui fitur registrasi
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Akun Admin
+- **Username:** `zidan`
+- **Password:** `zidan123`
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 3. Otp lupa kata-sandi
+Jika pengguna lupa kata sandi, mereka dapat menggunakan fitur “Lupa Kata sandi” pada halaman login.
+Aplikasi akan:
+- Meminta pengguna memasukkan nomor WhatsApp yang terdaftar
+- Mengirimkan kode OTP ke WhatsApp menggunakan API Fonnte
+- Memverifikasi OTP dan mengizinkan pengguna mengatur ulang kata sandi
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proyek ini dikembangkan untuk tujuan pembelajaran dan pengembangan aplikasi manajemen reservasi dan pemesanan alat musik.
+Hak cipta © 2025 Insphony. Hak Cipta Dilindungi.
+Anda bebas memodifikasi dan menggunakan proyek ini, selama menyertakan atribusi kepada pembuat asli.

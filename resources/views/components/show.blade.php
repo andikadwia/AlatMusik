@@ -260,7 +260,7 @@
                         </div>
                         
                         <!-- Action Buttons -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div class="grid grid-cols-1 gap-3 pt-2">
                             @php
                                 $stock = $product['stock'] ?? 0;
                                 $isAvailable = $stock > 0 && ($product['availability'] ?? false);

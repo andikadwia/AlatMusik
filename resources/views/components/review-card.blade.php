@@ -90,7 +90,7 @@
                         id="btn-{{ $uniqueId }}"
                         class="text-[#a08963] hover:text-[#8a7555] font-medium transition-colors duration-200 focus:outline-none text-left mt-2 self-start"
                     >
-                        Read more
+                        Baca lebih banyak
                     </button>
                 </div>
             @else
@@ -112,12 +112,12 @@
                     // Show full text
                     shortText.classList.add('hidden');
                     fullText.classList.remove('hidden');
-                    button.textContent = 'Read less';
+                    button.textContent = 'Baca lebih banyak';
                 } else {
                     // Show short text
                     fullText.classList.add('hidden');
                     shortText.classList.remove('hidden');
-                    button.textContent = 'Read more';
+                    button.textContent = 'Baca lebih sedikit';
                 }
             }
         </script>

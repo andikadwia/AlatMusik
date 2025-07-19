@@ -55,7 +55,7 @@
                         id="btn-{{ $uniqueId }}"
                         class="text-primary hover:text-primary-dark font-medium mt-3 transition-colors duration-200 focus:outline-none text-left"
                     >
-                        Read more
+                        Baca lebih banyak
                     </button>
                 @else
                     <div class="text-gray-600 text-base leading-relaxed">
@@ -82,13 +82,13 @@
         if (full.classList.contains('hidden')) {
             short.classList.add('hidden');
             full.classList.remove('hidden');
-            btn.textContent = 'Read less';
+            btn.textContent = 'Baca lebih sedikit';
             // Hapus min-height saat expanded
             card.style.minHeight = 'auto';
         } else {
             short.classList.remove('hidden');
             full.classList.add('hidden');
-            btn.textContent = 'Read more';
+            btn.textContent = 'Baca lebih banyak';
         }
     }
 </script>
