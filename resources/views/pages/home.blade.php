@@ -275,7 +275,7 @@
                             </div>
                             <div>
                                 <h4 class="font-medium text-gray-700">Telepon/WhatsApp</h4>
-                                <a href="https://wa.me/62879732844" class="text-gray-600 hover:text-gray-800 transition-colors">+62 879732844</a>
+                                <a href="https://wa.me/6289524003130" class="text-gray-600 hover:text-gray-800 transition-colors">+62 89524003130</a>
                             </div>
                         </div>
                         
@@ -288,7 +288,7 @@
                             </div>
                             <div>
                                 <h4 class="font-medium text-gray-700">Email</h4>
-                                <a href="mailto:Insphonymusik@gmail.com" class="text-gray-600 hover:text-gray-800 transition-colors">Insphonymusik@gmail.com</a>
+                                <a href="mailto:Insphonymusik@gmail.com" class="text-gray-600 hover:text-gray-800 transition-colors">Insphony@gmail.com</a>
                             </div>
                         </div>
                         
