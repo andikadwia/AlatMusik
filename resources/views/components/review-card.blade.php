@@ -6,7 +6,7 @@
     $firstProductImage = $productImages[0] ?? 'https://via.placeholder.com/150?text=Product';
     
     // Menentukan batas karakter untuk "read more"
-    $maxLength = 100;
+    $maxLength = 200;
     $content = $review['content'];
     $isLongText = strlen($content) > $maxLength;
     $shortContent = $isLongText ? substr($content, 0, $maxLength) . '...' : $content;
@@ -88,8 +88,7 @@
                         type="button"
                         onclick="toggleReadMore('{{ $uniqueId }}')"
                         id="btn-{{ $uniqueId }}"
-                        class="text-[#a08963] hover:text-[#8a7555] font-medium transition-colors duration-200 focus:outline-none text-left mt-2 self-start"
-                    >
+                        class="text-[#a08963] hover:text-[#8a7555] font-medium transition-colors duration-200 focus:outline-none text-left mt-2 self-start">
                         Baca lebih banyak
                     </button>
                 </div>

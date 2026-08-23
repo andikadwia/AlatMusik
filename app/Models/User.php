@@ -37,6 +37,23 @@ class User extends Authenticatable
         'role' => 'string',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            if ($user->username === 'admin' || $user->id === 1) {
+                // Mencegah penghapusan akun Super Admin utama
+                return false;
+            }
+        });
+
+        static::updating(function ($user) {
+            if (($user->getOriginal('username') === 'admin' || $user->getOriginal('id') === 1) && $user->role !== self::ROLE_ADMIN) {
+                // Memastikan akun Super Admin utama selalu memiliki role admin (tidak bisa diganggu gugat)
+                $user->role = self::ROLE_ADMIN;
+            }
+        });
+    }
+
     public function pengguna()
     {
         return $this->belongsTo(User::class, 'id_pengguna');
@@ -55,5 +72,10 @@ class User extends Authenticatable
     public function isUser()
     {
         return $this->role === self::ROLE_USER;
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->isAdmin() && ($this->username === 'admin' || $this->id === 1);
     }
 }
